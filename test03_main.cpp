@@ -1,17 +1,15 @@
 /*
- * ARKANOID 
- * by Ren Waldura ren+fx9860@waldura.org
- * License: 
- *
  * THINGS TO KEEP IN MIND
  * bit 0 = off = white
  * bit 1 = on = black
  */
 
+#include <stdlib.h>
+#include "Sprite.h"
+
 extern "C"
 {
-#include "stdlib.h"
-#include "fxlib.h"
+	#include "fxlib.h"
 }
 
 const int REFRESH_FREQUENCY = 50; // ms
@@ -26,60 +24,34 @@ enum Action
 	MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT
 };
 
-struct Sprite 
-{                                                     
-	unsigned int width;
-	unsigned int height;
-	unsigned char *mask;
-	unsigned char *bitmap;
-};
-
-const Sprite NULL_SPRITE = { 0, 0, 0, 0 };
-
-unsigned char grey_pattern_bmap[] = { 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 };
-const Sprite GREY_PATTERN = { 8, 8, 0, grey_pattern_bmap };
-
-unsigned char zebra_pattern_bmap[] = { 0x92, 0x49, 0x24, 0x92, 0x49, 0x24, 0x92, 0x49 };
-const Sprite ZEBRA_PATTERN = { 8, 8, 0, zebra_pattern_bmap };
-
-unsigned char ball_sprite_mask[] = {
-    0xe7, 0x81, 0x81, 0x00, 0x00, 0x81, 0x81, 0xe7
-};
-unsigned char ball_sprite_bmap[] = {
-    0x00, 0x18, 0x3c, 0x76, 0x7e, 0x3c, 0x18, 0x00
-};                                                   
-const Sprite BALL_SPRITE = { 8, 8, ball_sprite_mask, ball_sprite_bmap };
-
-void draw_sprite(const Sprite& sprite, int x, int y)
+void draw_sprite(const Sprite* sprite, int x, int y)
 {
 	DISPGRAPH dispGraph;
 	dispGraph.x = x;
 	dispGraph.y = y;
 	dispGraph.WriteModify = IMB_WRITEMODIFY_NORMAL;
-	dispGraph.GraphData.width = sprite.width;
-	dispGraph.GraphData.height = sprite.height;
+	dispGraph.GraphData.width = sprite->width;
+	dispGraph.GraphData.height = sprite->height;
 
 	/* draw mask */
-	if (sprite.mask)
+	if (sprite->mask)
 	{
-		dispGraph.GraphData.pBitmap = sprite.mask;
+		dispGraph.GraphData.pBitmap = (unsigned char*) sprite->mask;
 		dispGraph.WriteKind = IMB_WRITEKIND_AND;
 		Bdisp_WriteGraph_VRAM(&dispGraph);		
 	}
 
 	/* draw bitmap */
-	dispGraph.GraphData.pBitmap = sprite.bitmap;
+	dispGraph.GraphData.pBitmap = (unsigned char*) sprite->bitmap;
 	dispGraph.WriteKind = IMB_WRITEKIND_OR;
 	Bdisp_WriteGraph_VRAM(&dispGraph);
 }
 
-void draw_background(const Sprite& pattern)
+void draw_background(const Sprite* pattern)
 {
-    Bdisp_AllClr_VRAM();
-
-	for (int x = 0; x < SCREEN_WIDTH; x += pattern.width)
+	for (int x = 0; x < SCREEN_WIDTH; x += pattern->width)
 	{
-		for (int y = 0; y < SCREEN_HEIGHT; y += pattern.height)
+		for (int y = 0; y < SCREEN_HEIGHT; y += pattern->height)
 		{
 			draw_sprite(pattern, x, y);
 		}
@@ -106,21 +78,35 @@ Action handle_keyboard()
 	return a;
 }
 
+static void log(const unsigned char* mesg)
+{
+	static int line = 0;
+	PrintMini(0, line, mesg, MINI_OVER);
+	line += 6;
+	unsigned int key; GetKey(&key);
+}
+
 extern "C" int test03_main(int isAppli, unsigned short optionNum)
 {
+    Bdisp_AllClr_DDVRAM();
+
+	SpriteFactory* spriteFactory = new SpriteFactory();
+	spriteFactory->load_all();
+
+	const Sprite* ball = spriteFactory->get(BLACK_BALL);
 	int ball_x = SCREEN_WIDTH / 2;
 	int ball_y = SCREEN_HEIGHT / 2;
 	int delta_x = 2;
 	int delta_y = 1;
 
-	int quit = 0;
+	bool quit = false;
 	while (!quit)
     {
 		Action action = handle_keyboard();
 		switch (action)
 		{
 			case EXIT_ACTION:
-				quit = 1;
+				quit = true;
 				break;
 			
 			case MOVE_UP:
@@ -150,18 +136,19 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 			delta_x = +2;
 			if (delta_y == 0 && rand() % 3 == 0) delta_y = +1;
 		} 
-		else if (ball_x >= SCREEN_WIDTH - BALL_SPRITE.width) 
+		else if (ball_x >= SCREEN_WIDTH - ball->width) 
 		{
 			delta_x = -2;			
 			if (delta_y == 0 && rand() % 3 == 0) delta_y = +1;
 		}
 
+		// if ball goes in a straight line, randomize its bouncing
 		if (ball_y <= 0) 
 		{
 			if (delta_x == 0 && rand() % 3 == 0) delta_x = +1;
 			delta_y = +1;
 		}
-		else if (ball_y >= SCREEN_HEIGHT - BALL_SPRITE.height) 
+		else if (ball_y >= SCREEN_HEIGHT - ball->height) 
 		{
 			if (delta_x == 0 && rand() % 3 == 0) delta_x = +1;
 			delta_y = -1;			
@@ -171,8 +158,8 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 		ball_y += delta_y;
 
 		// refresh the screen
-		draw_background(GREY_PATTERN);
-		draw_sprite(BALL_SPRITE, ball_x, ball_y);
+		draw_background(spriteFactory->get(GREY_PATTERN));
+		draw_sprite(ball, ball_x, ball_y);
 		Bdisp_PutDisp_DD();	
 
 		// and wait

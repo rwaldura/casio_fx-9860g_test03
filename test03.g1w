@@ -14,3 +14,5 @@ LoadAddress=80000000:90100000
 [Files]
 SourceFile=:test03.c
 SourceFile=:test03_main.cpp
+SourceFile=:Sprite.cpp
+HeaderFile=:Sprite.h
