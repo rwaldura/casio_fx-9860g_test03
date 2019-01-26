@@ -63,16 +63,33 @@ static void log(const unsigned char* mesg)
 	unsigned int key; GetKey(&key);
 }
 
+/*
+ * An object in the game: the ball, the paddle, the bricks.
+ * The size of object can differ from the size of its sprite! 
+ * This lets us accommodate shadows etc. around the object itself.
+ */
+class GameObject
+{
+public:
+	int width, height;
+	int x, y; // location in the game area
+	int delta_x, delta_y;
+	const Sprite* sprite;
+
+	GameObject(int h, int w, const Sprite* s = 0, int xx = 0, int yy = 0) 
+		: width(w), height(h), sprite(s), x(xx), y(yy) { }
+};
+
 extern "C" int test03_main(int isAppli, unsigned short optionNum)
 {
+	// load all the sprites, we're going to need them
 	SpriteFactory* spriteFactory = new SpriteFactory();
 	spriteFactory->load_all();
 
-	const Sprite* ball = spriteFactory->get(BLACK_BALL);
-	int ball_x = SCREEN_WIDTH / 2;
-	int ball_y = SCREEN_HEIGHT / 2;
-	int delta_x = 2;
-	int delta_y = 1;
+	// the ball 
+	GameObject* ball = new GameObject(6, 6, spriteFactory->get(BLACK_BALL));
+	ball->delta_x = 3;
+	ball->delta_y = 2;
 
 	bool quit = false;
 	while (!quit)
@@ -85,56 +102,56 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 				break;
 			
 			case MOVE_UP:
-				delta_x = 0;
-				delta_y = -2;	// to move up, we must reduce y
+				ball->delta_x = 0;
+				ball->delta_y = -3;	// to move up, we must reduce y
 				break;
 
 			case MOVE_DOWN:
-				delta_x = 0;
-				delta_y = +2;
+				ball->delta_x = 0;
+				ball->delta_y = +3;
 				break;
 
 			case MOVE_LEFT:
-				delta_x = -2;
-				delta_y = 0;
+				ball->delta_x = -3;
+				ball->delta_y = 0;
 				break;
 
 			case MOVE_RIGHT:
-				delta_x = +2;
-				delta_y = 0;
+				ball->delta_x = +3;
+				ball->delta_y = 0;
 				break;
 		}
 
 		// ball bounces off the edges of the screen
-		if (ball_x <= 0)
+		if (ball->x <= 0)
 		{
-			delta_x = +2;
-			if (delta_y == 0 && rand() % 3 == 0) delta_y = +1;
+			ball->delta_x = +3;
+			if (ball->delta_y == 0 && rand() % 3 == 0) ball->delta_y = +1;
 		} 
-		else if (ball_x >= SCREEN_WIDTH - ball->width) 
+		else if (ball->x >= SCREEN_WIDTH - ball->width) 
 		{
-			delta_x = -2;			
-			if (delta_y == 0 && rand() % 3 == 0) delta_y = +1;
+			ball->delta_x = -3;			
+			if (ball->delta_y == 0 && rand() % 3 == 0) ball->delta_y = +1;
 		}
 
 		// if ball goes in a straight line, randomize its bouncing
-		if (ball_y <= 0) 
+		if (ball->y <= 0) 
 		{
-			if (delta_x == 0 && rand() % 3 == 0) delta_x = +1;
-			delta_y = +1;
+			if (ball->delta_x == 0 && rand() % 3 == 0) ball->delta_x = +1;
+			ball->delta_y = +1;
 		}
-		else if (ball_y >= SCREEN_HEIGHT - ball->height) 
+		else if (ball->y >= SCREEN_HEIGHT - ball->height) 
 		{
-			if (delta_x == 0 && rand() % 3 == 0) delta_x = +1;
-			delta_y = -1;			
+			if (ball->delta_x == 0 && rand() % 3 == 0) ball->delta_x = +1;
+			ball->delta_y = -1;			
 		}
 
-		ball_x += delta_x;
-		ball_y += delta_y;
+		ball->x += ball->delta_x;
+		ball->y += ball->delta_y;
 
 		// refresh the screen
 		draw_background(spriteFactory->get(GREY_PATTERN));
-		ball->draw(ball_x, ball_y);
+		ball->sprite->draw(ball->x, ball->y);
 		Bdisp_PutDisp_DD();	
 
 		// and wait
