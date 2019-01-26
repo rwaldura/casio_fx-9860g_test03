@@ -1,3 +1,9 @@
+/*
+ * All sprite-related classes: Sprite and SpriteFactory.
+ * A sprite is a bitmap, with an optional mask. It knows how to draw itself to the VRAM.
+ * The sprite factory loads sprites into main memory.
+ */
+
 class Sprite 
 {
 public:
@@ -9,6 +15,8 @@ public:
 	Sprite(int w, int h, unsigned char *bm, unsigned char *m = 0)
 		: width(w), height(h), bitmap(bm), mask(m)
 	{ }
+
+	void draw(int x, int y) const;
 };
 
 enum SpriteKind

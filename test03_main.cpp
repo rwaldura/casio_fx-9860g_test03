@@ -24,36 +24,13 @@ enum Action
 	MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT
 };
 
-void draw_sprite(const Sprite* sprite, int x, int y)
-{
-	DISPGRAPH dispGraph;
-	dispGraph.x = x;
-	dispGraph.y = y;
-	dispGraph.WriteModify = IMB_WRITEMODIFY_NORMAL;
-	dispGraph.GraphData.width = sprite->width;
-	dispGraph.GraphData.height = sprite->height;
-
-	/* draw mask */
-	if (sprite->mask)
-	{
-		dispGraph.GraphData.pBitmap = (unsigned char*) sprite->mask;
-		dispGraph.WriteKind = IMB_WRITEKIND_AND;
-		Bdisp_WriteGraph_VRAM(&dispGraph);		
-	}
-
-	/* draw bitmap */
-	dispGraph.GraphData.pBitmap = (unsigned char*) sprite->bitmap;
-	dispGraph.WriteKind = IMB_WRITEKIND_OR;
-	Bdisp_WriteGraph_VRAM(&dispGraph);
-}
-
 void draw_background(const Sprite* pattern)
-{
+{	
 	for (int x = 0; x < SCREEN_WIDTH; x += pattern->width)
 	{
 		for (int y = 0; y < SCREEN_HEIGHT; y += pattern->height)
 		{
-			draw_sprite(pattern, x, y);
+			pattern->draw(x, y);
 		}
 	}
 }
@@ -88,8 +65,6 @@ static void log(const unsigned char* mesg)
 
 extern "C" int test03_main(int isAppli, unsigned short optionNum)
 {
-    Bdisp_AllClr_DDVRAM();
-
 	SpriteFactory* spriteFactory = new SpriteFactory();
 	spriteFactory->load_all();
 
@@ -159,7 +134,7 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 
 		// refresh the screen
 		draw_background(spriteFactory->get(GREY_PATTERN));
-		draw_sprite(ball, ball_x, ball_y);
+		ball->draw(ball_x, ball_y);
 		Bdisp_PutDisp_DD();	
 
 		// and wait

@@ -1,4 +1,18 @@
+/*
+ * All sprite-related classes: Sprite and SpriteFactory.
+ * A sprite is a bitmap, with an optional mask. It knows how to draw itself to the VRAM.
+ *
+ * The sprite factory loads sprites into main memory.
+ * I wish I could read sprites from a file; I don't know how to do that.
+ * Instead, sprites are defined inline with byte arrays.
+ */
+
 #include "Sprite.h"
+
+extern "C"
+{
+	#include "fxlib.h"
+}
 
 static unsigned char grey_pattern_bmap[] = {
 	0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 
@@ -40,3 +54,43 @@ const Sprite* SpriteFactory::get(SpriteKind sk)
 {
 	return sprites[sk];
 }
+
+/* 
+ * Draw a sprite to VRAM: punch a hole in the bitmap by ANDing the mask first,
+ * then insert the actual sprite bitmap.
+ */
+void Sprite::draw(int x, int y) const
+{
+	DISPGRAPH dispGraph;
+	dispGraph.x = x;
+	dispGraph.y = y;
+	dispGraph.WriteModify = IMB_WRITEMODIFY_NORMAL;
+	dispGraph.GraphData.width = this->width;
+	dispGraph.GraphData.height = this->height;
+
+	if (this->mask)
+	{
+		// mask first to clear the area
+		dispGraph.GraphData.pBitmap = (unsigned char*) this->mask;
+		dispGraph.WriteKind = IMB_WRITEKIND_AND;
+		Bdisp_WriteGraph_VRAM(&dispGraph);		
+
+		// the actual sprite
+		dispGraph.GraphData.pBitmap = (unsigned char*) this->bitmap;
+		dispGraph.WriteKind = IMB_WRITEKIND_OR;
+		Bdisp_WriteGraph_VRAM(&dispGraph);
+	}
+	else
+	{
+		// no mask: merely fill
+		dispGraph.GraphData.pBitmap = (unsigned char*) this->bitmap;
+		dispGraph.WriteKind = IMB_WRITEKIND_OVER;
+		Bdisp_WriteGraph_VRAM(&dispGraph);		
+	}
+}
+
+
+
+
+
+
