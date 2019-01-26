@@ -1,0 +1,16 @@
+[DLSimProject]
+Name=test03
+Version=1.00.0000
+Model=:fx-9860G.dlm
+SourcePath=SRC
+MemoryPath=INIT
+MemCardPath=SDCard
+
+[Program1]
+Program=TEST03.G1A
+Debug=Debug\FXADDINror.dbg
+LoadAddress=80000000:90100000
+
+[Files]
+SourceFile=:test03.c
+SourceFile=:test03_main.cpp

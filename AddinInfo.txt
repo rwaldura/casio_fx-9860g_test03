@@ -1,0 +1,12 @@
+//------------------------------------------------------------------
+// Addin-Application header control file, created with the CASIO SDK
+//------------------------------------------------------------------
+[OUTPUT]     : "TEST03.G1A"
+[BINDATA]    : "FXADDINror.bin"
+[DISPNAME]   : "test03"
+[APPNAME]    : "@TEST03"
+[VERSION]    : "01.00.0000"
+[APL_ICON]   : "MainIcon.bmp"
+[MODULE_NUM] : 0
+[MOD1_TITLE] : "test03"
+[MOD1_ICON]  : "eActivityIcon.bmp"
