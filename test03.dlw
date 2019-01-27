@@ -2,19 +2,19 @@
 
 [_1]
 Type=5
-Order=1
+Order=0
 Top=15
 Left=2235
 Height=4740
 Width=5565
-State=16
+State=0
 Flags=00000020
-Setting=100:1:test03_main.cpp
+Setting=128:1:test03_main.cpp
 OptionA=0
 
 [_2]
 Type=1
-Order=4
+Order=3
 Top=-15
 Left=16005
 Height=4740
@@ -26,7 +26,7 @@ OptionB=15
 
 [_3]
 Type=6
-Order=2
+Order=1
 Top=3705
 Left=16050
 Height=6390
@@ -37,7 +37,7 @@ OptionA=0
 
 [_4]
 Type=7
-Order=7
+Order=6
 Top=4740
 Left=2220
 Height=3165
@@ -48,7 +48,7 @@ OptionA=0
 
 [_5]
 Type=8
-Order=6
+Order=5
 Top=7905
 Left=2220
 Height=3225
@@ -81,7 +81,7 @@ OptionA=0
 
 [_8]
 Type=17
-Order=5
+Order=4
 Top=15
 Left=-15
 Height=11115
@@ -92,7 +92,7 @@ OptionA=0
 
 [_9]
 Type=15
-Order=0
+Order=2
 Top=4740
 Left=-15
 Height=7065
@@ -103,14 +103,14 @@ OptionA=0
 
 [_32]
 Type=16
-Order=3
+Order=7
 Top=-195
 Left=12645
 Height=11535
 Width=8055
 State=16
 Flags=00000020
-Setting=77:1:Sprite.cpp
+Setting=83:1:Sprite.cpp
 OptionA=0
 
 [_33]

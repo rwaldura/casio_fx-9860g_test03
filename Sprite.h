@@ -12,8 +12,10 @@ enum SpriteKind
 	MEDIUM_PATTERN,
 	DARK_PATTERN,
 	ZEBRA_PATTERN,
+	MINI_BALL,
 	WHITE_BALL,
-	BLACK_BALL
+	BLACK_BALL,
+	SIMPLE_PADDLE
 };
 
 class Sprite 
@@ -39,6 +41,7 @@ class SpriteFactory
 		void load_all();
 		const Sprite* get(SpriteKind sk);
 		const Sprite* next_pattern(const Sprite* pattern);		
+		const Sprite* next_ball(const Sprite* pattern);		
 
 	private:
 		const Sprite* sprites[99];	// max number of sprites

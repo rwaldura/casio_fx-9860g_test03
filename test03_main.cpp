@@ -15,7 +15,7 @@ extern "C"
  * Heartbeat of this program. We compute changes, and refresh the display
  * accordingly, every REFRESH_FREQUENCY ms.
  */
-const int REFRESH_FREQUENCY = 200; // ms
+const int REFRESH_FREQUENCY = 100; // ms
 
 /*
  * The Casio fx-9860G has a simple LCD monochrome display.
@@ -90,7 +90,7 @@ public:
 	int x, y; // location in the game area
 	int delta_x, delta_y;
 
-	GameObject(int h, int w, const Sprite* s = 0, int xx = 0, int yy = 0) 
+	GameObject(int w, int h, const Sprite* s = 0, int xx = 0, int yy = 0) 
 		: width(w), height(h), sprite(s), x(xx), y(yy) 
 	{
 	}
@@ -111,11 +111,17 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 	factory->load_all();
 
 	// the background 
-	const Sprite* background_pattern = factory->get(BLACK_PATTERN);
+	const Sprite* background_pattern = factory->get(MEDIUM_PATTERN);
+
+	// the paddle 
+	GameObject* paddle = new GameObject(16, 8, factory->get(SIMPLE_PADDLE));
+	paddle->x = 22;
+	paddle->y = DISPLAY_HEIGHT - paddle->height - 4; // fixed
 
 	// the ball 
 	GameObject* ball = new GameObject(6, 6, factory->get(WHITE_BALL));
-	ball->delta_x = 3;
+	ball->x = ball->y = 1;
+	ball->delta_x = 4;
 	ball->delta_y = 2;
 
 	bool quit = false;
@@ -129,39 +135,38 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 				break;
 			
 			case MOVE_UP:
-				ball->delta_x = 0;
-				ball->delta_y = -3;	// to move up, we must reduce y
+				// no-op
 				break;
 
 			case MOVE_DOWN:
-				ball->delta_x = 0;
-				ball->delta_y = +3;
+				// no-op
 				break;
 
 			case MOVE_LEFT:
-				ball->delta_x = -3;
-				ball->delta_y = 0;
+				paddle->x -= 3;
 				break;
 
 			case MOVE_RIGHT:
-				ball->delta_x = +3;
-				ball->delta_y = 0;
+				paddle->x += 3;
 				break;
 
-			// rotate the background
+			// cycle the background
 			case CHANGE_BACKGROUND:
 				background_pattern = factory->next_pattern(background_pattern);
 				break;
 
 			// rotate the ball
 			case CHANGE_BALL:
-				ball->sprite = (ball->sprite->kind == WHITE_BALL) 
-					? factory->get(BLACK_BALL) 
-					: factory->get(WHITE_BALL);
+				ball->sprite = factory->next_ball(ball->sprite);
 				break;
 		}
 
-		// ball bounces off the edges of the screen
+		// CONSTRAINT: paddle must stay in play area
+		if (paddle->x <= 1) paddle->x = 1;
+		if (paddle->x >= DISPLAY_WIDTH - paddle->width) paddle->x = DISPLAY_WIDTH - paddle->width;
+
+		// CONSTRAINT: ball bounces off the edges of the screen
+		// if ball goes in a straight line, randomize its bouncing
 		if (ball->x <= 0)
 		{
 			ball->delta_x = +3;
@@ -173,7 +178,6 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 			if (ball->delta_y == 0 && rand() % 3 == 0) ball->delta_y = +1;
 		}
 
-		// if ball goes in a straight line, randomize its bouncing
 		if (ball->y <= 0) 
 		{
 			if (ball->delta_x == 0 && rand() % 3 == 0) ball->delta_x = +1;
@@ -191,6 +195,7 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 		// refresh the screen
 		draw_background(background_pattern);
 		ball->draw();
+		paddle->draw();
 		Bdisp_PutDisp_DD();	
 
 		// and wait
