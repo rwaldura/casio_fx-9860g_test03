@@ -6,12 +6,7 @@
 # This is really to create sprites for the Casion fx-9860G calculator;
 # until I find a way to bundle and read BMPs by program. :(
 #
-# Note 1
-# Bitmaps are usually read from left to right, and bottom to top
-# (x from 0 to width, y from height to 0).
-# Here we flip the image, such that pixels are listed from top to bottom.
-#
-# Note 2
+# Note 
 # We reverse the colors: a black pixel in the BMP, becomes white in the 
 # output. That's because the fx-9860G has a monochrome LCD screen, where 
 # bit 1 = pixel lit = black color. Unlike a regular computer display, where 
@@ -34,17 +29,16 @@ sub read_bmp_bits
 	$img->open_file($bmp_file);
 
 	#$img->view_ascii();
-	
-	# reverse order: read from top to bottom
+
+	# read row by row
 	for (my $y = 0; $y < $img->{Height}; $y++)
-	# for (my $y = $img->{Height} - 1; $y >= 0; $y--)
 	{
 		for (my $x = 0; $x < $img->{Width}; $x++)
 		{
 			my $color = $img->xy($x, $y);
 			my($r, $g, $b) = $img->xy_rgb($x, $y);
 			my $index = $img->xy_index($x, $y);
-			warn "x=$x, y=$y : i=$index, c=$color, (r,g,b)=($r,$g,$b)";
+			#warn "x=$x, y=$y : i=$index, c=$color, (r,g,b)=($r,$g,$b)";
 		
 			# reverse BMP color logic: black pixels become ones (lit).
 			$pixel_bits .= ($r == 0 && $g == 0 && $b == 0) ? '1' : '0';
@@ -69,25 +63,25 @@ foreach (@ARGV)
 	
 	my $bmp_file = $_;
 	my $pixel_bits = read_bmp_bits($bmp_file);
-	warn $pixel_bits;
+	#warn $pixel_bits;
 	
 	# target system is big-endian
-	my $hex = unpack('H*', pack('B*', $pixel_bits));
-	warn $hex;
+	my $hex_bytes = unpack('H*', pack('B*', $pixel_bits));
+	#warn $hex_bytes;
 
-	my $hex_bytes = '';
+	my $c_array = '';
 	my $n;
-	while ($hex =~ /(..)/g)
+	while ($hex_bytes =~ /(..)/g)
 	{
-		$hex_bytes .= "0x$1, ";
-		$hex_bytes .= "\n\t" if (++$n % 16 == 0);
+		$c_array .= "0x$1, ";
+		$c_array .= "\n\t" if (++$n % 16 == 0);
 	}
-	$hex_bytes =~ s/, $//; # zap last comma
+	$c_array =~ s/, $//; # zap last comma
 
 	print "
 /* $bmp_file */
 static const unsigned char bitmap_data[] = {
-	$hex_bytes
+	$c_array
 };
 ";
 }
