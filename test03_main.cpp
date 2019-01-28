@@ -202,6 +202,9 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 		Sleep(REFRESH_FREQUENCY);		
     }
 
-    return 1;
+	// clean up
+	delete factory;
+
+    return 1; // NO_ERROR
 }
 

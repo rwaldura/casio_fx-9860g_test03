@@ -24,26 +24,31 @@ class Sprite
 		const SpriteKind kind;
 		const unsigned int width;
 		const unsigned int height;
-		const unsigned char *mask;
-		const unsigned char *bitmap;	
 
 		Sprite(SpriteKind k, int w, int h, const unsigned char *bm, const unsigned char *m = 0)
 			: kind(k), width(w), height(h), bitmap(bm), mask(m)
-		{ }
+		{
+		}
 
 		void draw(int x, int y) const;
+
+	private:
+		const unsigned char *mask;
+		const unsigned char *bitmap;	
 };
 
 class SpriteFactory
 {
 	public:
 		SpriteFactory();
+		~SpriteFactory();
 		void load_all();
 		const Sprite* get(SpriteKind sk);
-		const Sprite* next_pattern(const Sprite* pattern);		
-		const Sprite* next_ball(const Sprite* pattern);		
+		const Sprite* next_pattern(const Sprite* s);		
+		const Sprite* next_ball(const Sprite* s);		
 
 	private:
-		const Sprite* sprites[99];	// max number of sprites
+		static const int MAX_SPRITES = 99;
+		const Sprite* sprites[MAX_SPRITES];
 };
 

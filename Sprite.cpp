@@ -7,12 +7,13 @@
  * Instead, sprites are defined inline with byte arrays.
  */
 
-#include "Sprite.h"
-
 extern "C"
 {
 	#include "fxlib.h"
 }
+
+#include "Sprite.h"
+
 
 static const unsigned char light_pattern_bmap[] = {
     0x00, 0x22, 0x44, 0x00, 0x00, 0x22, 0x44, 0x00
@@ -73,6 +74,14 @@ SpriteFactory::SpriteFactory()
 	;
 }
 
+SpriteFactory::~SpriteFactory()
+{
+	for (int i = 0; i < this->MAX_SPRITES; i++)
+	{
+		if (sprites[i]) delete sprites[i];
+	}
+}
+
 void SpriteFactory::load_all()
 {
 	sprites[NULL_SPRITE] = new Sprite(NULL_SPRITE, 0, 0, 0);
@@ -97,6 +106,7 @@ const Sprite* SpriteFactory::get(SpriteKind sk)
 
 const Sprite* SpriteFactory::next_pattern(const Sprite* pattern)		
 {
+	// ZEBRA_PATTERN is the last pattern
 	SpriteKind next_kind = (SpriteKind) (1 + (pattern->kind + 1) % ZEBRA_PATTERN);
 	return this->get(next_kind);
 }
@@ -120,31 +130,29 @@ const Sprite* SpriteFactory::next_ball(const Sprite* ball)
  */
 void Sprite::draw(int x, int y) const
 {
-	DISPGRAPH dispGraph;
-	dispGraph.x = x;
-	dispGraph.y = y;
-	dispGraph.WriteModify = IMB_WRITEMODIFY_NORMAL;
-	dispGraph.GraphData.width = this->width;
-	dispGraph.GraphData.height = this->height;
+	DISPGRAPH dg = { x, y };
+	dg.WriteModify = IMB_WRITEMODIFY_NORMAL;
+	dg.GraphData.width = width;
+	dg.GraphData.height = height;
 
-	if (this->mask)
+	if (mask)
 	{
 		// mask first to clear the area
-		dispGraph.GraphData.pBitmap = (unsigned char*) this->mask;
-		dispGraph.WriteKind = IMB_WRITEKIND_AND;
-		Bdisp_WriteGraph_VRAM(&dispGraph);		
+		dg.GraphData.pBitmap = (unsigned char*) mask;
+		dg.WriteKind = IMB_WRITEKIND_AND;
+		Bdisp_WriteGraph_VRAM(&dg);		
 
 		// the actual sprite
-		dispGraph.GraphData.pBitmap = (unsigned char*) this->bitmap;
-		dispGraph.WriteKind = IMB_WRITEKIND_OR;
-		Bdisp_WriteGraph_VRAM(&dispGraph);
+		dg.GraphData.pBitmap = (unsigned char*) bitmap;
+		dg.WriteKind = IMB_WRITEKIND_OR;
+		Bdisp_WriteGraph_VRAM(&dg);
 	}
 	else
 	{
 		// no mask: merely fill
-		dispGraph.GraphData.pBitmap = (unsigned char*) this->bitmap;
-		dispGraph.WriteKind = IMB_WRITEKIND_OVER;
-		Bdisp_WriteGraph_VRAM(&dispGraph);		
+		dg.GraphData.pBitmap = (unsigned char*) bitmap;
+		dg.WriteKind = IMB_WRITEKIND_OVER;
+		Bdisp_WriteGraph_VRAM(&dg);		
 	}
 }
 
