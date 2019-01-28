@@ -33,19 +33,21 @@ sub read_bmp_bits
 	my $img = new Image::BMP();
 	$img->open_file($bmp_file);
 
-	for (my $x = 0; $x < $img->{Width}; $x++)
+	#$img->view_ascii();
+	
+	# reverse order: read from top to bottom
+	for (my $y = 0; $y < $img->{Height}; $y++)
+	# for (my $y = $img->{Height} - 1; $y >= 0; $y--)
 	{
-		# reverse order: read from top to bottom
-		for (my $y = $img->{Height} - 1; $y >= 0; $y--)
+		for (my $x = 0; $x < $img->{Width}; $x++)
 		{
 			my $color = $img->xy($x, $y);
 			my($r, $g, $b) = $img->xy_rgb($x, $y);
 			my $index = $img->xy_index($x, $y);
-			#warn "x=$x, y=$y : i=$index, c=$color, (r,g,b)=($r,$g,$b)";
+			warn "x=$x, y=$y : i=$index, c=$color, (r,g,b)=($r,$g,$b)";
 		
-			# reverse BMP color logic: any black (no color) pixel in the BMP,
-			# becomes white (zero) in our output
-			$pixel_bits .= ($r == 0 && $g == 0 && $b == 0) ? '0' : '1';
+			# reverse BMP color logic: black pixels become ones (lit).
+			$pixel_bits .= ($r == 0 && $g == 0 && $b == 0) ? '1' : '0';
 		}	
 	}
 
@@ -70,7 +72,7 @@ foreach (@ARGV)
 	warn $pixel_bits;
 	
 	# target system is big-endian
-	my $hex = unpack('H*', pack('b*', $pixel_bits));
+	my $hex = unpack('H*', pack('B*', $pixel_bits));
 	warn $hex;
 
 	my $hex_bytes = '';
