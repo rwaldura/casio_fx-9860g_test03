@@ -4,10 +4,10 @@
 # suitable for inclusion into a C program. 
 #
 # This is really to create sprites for the Casion fx-9860G calculator;
-# until I find a way to bundle and read BMPs by program. 
+# until I find a way to bundle and read BMPs by program. :(
 #
 # Note 1
-# Bitmaps are read from left to right, and bottom to top
+# Bitmaps are usually read from left to right, and bottom to top
 # (x from 0 to width, y from height to 0).
 # Here we flip the image, such that pixels are listed from top to bottom.
 #
