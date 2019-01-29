@@ -114,9 +114,9 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 	const Sprite* background_pattern = factory->get(MEDIUM_PATTERN);
 
 	// the paddle 
-	GameObject* paddle = new GameObject(16, 8, factory->get(SIMPLE_PADDLE));
+	GameObject* paddle = new GameObject(16, 8, factory->get(MINI_PADDLE));
 	paddle->x = 22;
-	paddle->y = DISPLAY_HEIGHT - paddle->height - 4; // fixed
+	paddle->y = DISPLAY_HEIGHT - paddle->height - 10; // fixed
 
 	// the ball 
 	GameObject* ball = new GameObject(6, 6, factory->get(WHITE_BALL));

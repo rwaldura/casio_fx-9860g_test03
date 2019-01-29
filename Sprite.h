@@ -15,7 +15,7 @@ enum SpriteKind
 	MINI_BALL,
 	WHITE_BALL,
 	BLACK_BALL,
-	SIMPLE_PADDLE
+	MINI_PADDLE
 };
 
 class Sprite 

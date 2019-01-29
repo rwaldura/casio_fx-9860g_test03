@@ -57,9 +57,43 @@ static const unsigned char mini_ball_sprite_mask[] = {
     0xff, 0xe3, 0xc1, 0xc1, 0xc1, 0xe3, 0xff, 0xff
 };
 
-static const unsigned char simple_paddle_bitmap[] = {
+/* sprites/paddle-mini.bmp bitmap 16x16 */
+static const unsigned char mini_paddle_bitmap[] = {
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x30, 0x0c, 
+	0x55, 0x56, 
+	0x6a, 0xaa, 
+	0x30, 0x0c, 
+	0x00, 0x00, 
+	0x00, 0x00
 };
-static const unsigned char simple_paddle_mask[] = {
+/* sprites/paddle-mini.bmp mask 16x16 */
+static const unsigned char mini_paddle_mask[] = {
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xff, 0xff, 
+	0xcf, 0xf3, 
+	0x80, 0x01, 
+	0x00, 0x00, 
+	0x00, 0x00, 
+	0x80, 0x01, 
+	0xcf, 0xf3, 
+	0xff, 0xff
 };
 
 SpriteFactory::SpriteFactory()
@@ -89,7 +123,7 @@ void SpriteFactory::load_all()
 	sprites[WHITE_BALL] = new Sprite(WHITE_BALL, 8, 8, white_ball_sprite_bmap, white_ball_sprite_mask);
 	sprites[BLACK_BALL] = new Sprite(BLACK_BALL, 8, 8, black_ball_sprite_bmap, black_ball_sprite_mask);
 
-	sprites[SIMPLE_PADDLE] = new Sprite(SIMPLE_PADDLE, 16, 16, simple_paddle_bitmap, simple_paddle_mask);
+	sprites[MINI_PADDLE] = new Sprite(MINI_PADDLE, 16, 16, mini_paddle_bitmap, mini_paddle_mask);
 } 
 
 const Sprite* SpriteFactory::get(SpriteKind sk)
@@ -124,9 +158,9 @@ const Sprite* SpriteFactory::next_ball(const Sprite* ball)
 void Sprite::draw(int x, int y) const
 {
 	DISPGRAPH dg = { x, y };
-	dg.WriteModify = IMB_WRITEMODIFY_NORMAL;
 	dg.GraphData.width = width;
 	dg.GraphData.height = height;
+	dg.WriteModify = IMB_WRITEMODIFY_NORMAL;
 
 	if (mask)
 	{
