@@ -1,8 +1,11 @@
 /*
- * All sprite-related classes: Sprite and SpriteFactory.
+ * All sprite-related classes: Sprite and SpriteManager.
  * A sprite is a bitmap, with an optional mask. It knows how to draw itself to the VRAM.
- * The sprite factory loads sprites into main memory.
+ * The sprite manager loads sprites into main memory.
  */
+
+#ifndef SPRITE_H
+#define SPRITE_H
 
 enum SpriteKind
 {
@@ -37,11 +40,11 @@ class Sprite
 		const unsigned char *bitmap;	
 };
 
-class SpriteFactory
+class SpriteManager
 {
 	public:
-		SpriteFactory();
-		~SpriteFactory();
+		SpriteManager();
+		~SpriteManager();
 		void load_all();
 		const Sprite* get(SpriteKind sk);
 		const Sprite* next_pattern(const Sprite* s);		
@@ -52,3 +55,4 @@ class SpriteFactory
 		const Sprite* sprites[MAX_SPRITES];
 };
 
+#endif

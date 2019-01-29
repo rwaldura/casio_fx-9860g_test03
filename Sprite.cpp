@@ -96,12 +96,12 @@ static const unsigned char mini_paddle_mask[] = {
 	0xff, 0xff
 };
 
-SpriteFactory::SpriteFactory()
+SpriteManager::SpriteManager()
 {
 	;
 }
 
-SpriteFactory::~SpriteFactory()
+SpriteManager::~SpriteManager()
 {
 	for (int i = 0; i < this->MAX_SPRITES; i++)
 	{
@@ -109,7 +109,7 @@ SpriteFactory::~SpriteFactory()
 	}
 }
 
-void SpriteFactory::load_all()
+void SpriteManager::load_all()
 {
 	sprites[NULL_SPRITE] = new Sprite(NULL_SPRITE, 0, 0, 0);
 
@@ -126,19 +126,19 @@ void SpriteFactory::load_all()
 	sprites[MINI_PADDLE] = new Sprite(MINI_PADDLE, 16, 16, mini_paddle_bitmap, mini_paddle_mask);
 } 
 
-const Sprite* SpriteFactory::get(SpriteKind sk)
+const Sprite* SpriteManager::get(SpriteKind sk)
 {
 	return sprites[sk];
 }
 
-const Sprite* SpriteFactory::next_pattern(const Sprite* pattern)		
+const Sprite* SpriteManager::next_pattern(const Sprite* pattern)		
 {
 	// ZEBRA_PATTERN is the last pattern
 	SpriteKind next_kind = (SpriteKind) (1 + (pattern->kind + 1) % ZEBRA_PATTERN);
 	return this->get(next_kind);
 }
 
-const Sprite* SpriteFactory::next_ball(const Sprite* ball)		
+const Sprite* SpriteManager::next_ball(const Sprite* ball)		
 {
 	SpriteKind next_kind;
 	if (ball->kind == MINI_BALL)

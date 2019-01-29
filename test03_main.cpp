@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include "Sprite.h"
+#include "Game.h"
 
 extern "C"
 {
@@ -78,49 +79,24 @@ static void log(const unsigned char* mesg)
 }
 
 /*
- * An object in the game: the ball, the paddle, the bricks.
- * The size of an object can differ from the size of its sprite! 
- * This lets us accommodate drop shadows etc. around the object itself.
- */
-class GameObject
-{
-public:
-	const Sprite* sprite;
-	const int width, height;
-	int x, y; // location in the game area
-	int delta_x, delta_y;
-
-	GameObject(int w, int h, const Sprite* s = 0, int xx = 0, int yy = 0) 
-		: width(w), height(h), sprite(s), x(xx), y(yy) 
-	{
-	}
-
-	void draw() const
-	{
-		this->sprite->draw(this->x, this->y);		
-	}
-};
-
-/*
  * Main function and game loop.
  */
 extern "C" int test03_main(int isAppli, unsigned short optionNum)
 {
 	// load all the sprites, we're going to need them
-	SpriteFactory* factory = new SpriteFactory();
-	factory->load_all();
+	SpriteManager* sm = new SpriteManager();
+	sm->load_all();
 
 	// the background 
-	const Sprite* background_pattern = factory->get(MEDIUM_PATTERN);
+	const Sprite* background_pattern = sm->get(MEDIUM_PATTERN);
 
 	// the paddle 
-	GameObject* paddle = new GameObject(16, 8, factory->get(MINI_PADDLE));
-	paddle->x = 22;
-	paddle->y = DISPLAY_HEIGHT - paddle->height - 10; // fixed
+	GameObject* paddle = new GameObject(16, 6, sm->get(MINI_PADDLE));
+	paddle->move_to(22, DISPLAY_HEIGHT - paddle->height - 2);
 
 	// the ball 
-	GameObject* ball = new GameObject(6, 6, factory->get(WHITE_BALL));
-	ball->x = ball->y = 1;
+	GameObject* ball = new GameObject(6, 6, sm->get(MINI_BALL));
+	ball->move_to(1, 1);
 	ball->delta_x = 4;
 	ball->delta_y = 2;
 
@@ -152,17 +128,17 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 
 			// cycle the background
 			case CHANGE_BACKGROUND:
-				background_pattern = factory->next_pattern(background_pattern);
+				background_pattern = sm->next_pattern(background_pattern);
 				break;
 
 			// rotate the ball
 			case CHANGE_BALL:
-				ball->sprite = factory->next_ball(ball->sprite);
+				ball->sprite = sm->next_ball(ball->sprite);
 				break;
 		}
 
 		// CONSTRAINT: ball bounces off paddle
-		if (ball->y >= paddle->y && (ball->x >= paddle->x && ball->x <= paddle->x + paddle->width))
+		if (ball->intersects(paddle))
 		{
 			ball->delta_x = -ball->delta_x;
 			ball->delta_y = -ball->delta_y;
@@ -196,8 +172,7 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 			ball->delta_y = -1;			
 		}
 
-		ball->x += ball->delta_x;
-		ball->y += ball->delta_y;
+		ball->move();
 
 		// refresh the screen
 		draw_background(background_pattern);
@@ -210,7 +185,7 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
     }
 
 	// clean up
-	delete factory;
+	delete sm;
 
     return 1; // NO_ERROR
 }
