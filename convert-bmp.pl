@@ -21,13 +21,9 @@ use Image::BMP;
 #
 sub read_bmp_bits
 {
-	my($bmp_file) = @_;
-	
+	my($img) = @_;
 	my $pixel_bits = '';
 	
-	my $img = new Image::BMP();
-	$img->open_file($bmp_file);
-
 	#$img->view_ascii();
 
 	# read row by row
@@ -36,16 +32,15 @@ sub read_bmp_bits
 		for (my $x = 0; $x < $img->{Width}; $x++)
 		{
 			my $color = $img->xy($x, $y);
-			my($r, $g, $b) = $img->xy_rgb($x, $y);
-			my $index = $img->xy_index($x, $y);
+			#my($r, $g, $b) = $img->xy_rgb($x, $y);
+			#my $index = $img->xy_index($x, $y);
 			#warn "x=$x, y=$y : i=$index, c=$color, (r,g,b)=($r,$g,$b)";
 		
-			# reverse BMP color logic: black pixels become ones (lit).
-			$pixel_bits .= ($r == 0 && $g == 0 && $b == 0) ? '1' : '0';
+			# reverse BMP color logic for monochrome LCD screen: 
+			# black pixels (zeroes) become ones (lit)
+			$pixel_bits .= ($color == 0) ? '1' : '0';
 		}	
 	}
-
-	$img->close();
 	
 	return $pixel_bits;
 }
@@ -60,30 +55,34 @@ foreach (@ARGV)
 		warn "Skipping $_: file does not end in \".bmp\"";
 		next;
 	}
-	
 	my $bmp_file = $_;
-	my $pixel_bits = read_bmp_bits($bmp_file);
+	
+	# read the BMP into memory
+	my $img = new Image::BMP('file' => $bmp_file);
+	$img->load();
+	$img->close();
+	
+	my $pixel_bits = read_bmp_bits($img);
 	#warn $pixel_bits;
 	
 	# target system is big-endian
 	my $hex_bytes = unpack('H*', pack('B*', $pixel_bits));
 	#warn $hex_bytes;
 
-	my $c_array = '';
-	my $n;
+	my $n = 0;
+	my $mm = '';
 	while ($hex_bytes =~ /(..)/g)
 	{
-		$c_array .= "0x$1, ";
-		$c_array .= "\n\t" if (++$n % 16 == 0);
+		$mm .= "\n\t" if ($n % ($img->{Width} / 8) == 0);
+		$mm .= "0x$1, ";
+		$n += 1;
 	}
-	$c_array =~ s/, $//; # zap last comma
+	$mm =~ s/, $//; # zap final comma
+	#warn $n;
 
-	print "
-/* $bmp_file */
-static const unsigned char bitmap_data[] = {
-	$c_array
-};
-";
+	print "/* $bmp_file */
+static const unsigned char bitmap_data[/* $img->{Width}x$img->{Height} */] = {$mm
+};\n";
 }
 
 
