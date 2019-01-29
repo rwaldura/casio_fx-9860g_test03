@@ -119,11 +119,11 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 				break;
 
 			case MOVE_LEFT:
-				paddle->x -= 3;
+				paddle->x -= 5;
 				break;
 
 			case MOVE_RIGHT:
-				paddle->x += 3;
+				paddle->x += 5;
 				break;
 
 			// cycle the background

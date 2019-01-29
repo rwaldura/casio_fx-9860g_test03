@@ -16,3 +16,4 @@ SourceFile=:test03.c
 SourceFile=:test03_main.cpp
 SourceFile=:Sprite.cpp
 HeaderFile=:Sprite.h
+HeaderFile=:Game.h
