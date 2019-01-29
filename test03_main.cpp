@@ -161,6 +161,13 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 				break;
 		}
 
+		// CONSTRAINT: ball bounces off paddle
+		if (ball->y >= paddle->y && (ball->x >= paddle->x && ball->x <= paddle->x + paddle->width))
+		{
+			ball->delta_x = -ball->delta_x;
+			ball->delta_y = -ball->delta_y;
+		}
+
 		// CONSTRAINT: paddle must stay in play area
 		if (paddle->x <= 1) paddle->x = 1;
 		if (paddle->x >= DISPLAY_WIDTH - paddle->width) paddle->x = DISPLAY_WIDTH - paddle->width;
