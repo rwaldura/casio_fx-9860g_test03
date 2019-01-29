@@ -45,6 +45,26 @@ sub read_bmp_bits
 	return $pixel_bits;
 }
 
+sub print_bitmap_array
+{
+	my($hex_bytes, $img_width, $comment) = @_;
+	
+	my $n = 0;
+	my $c_array = '';
+	foreach (@$hex_bytes)
+	{
+		$c_array .= "\n\t" if ($n++ % ($img_width / 8) == 0);
+		$c_array .= "0x$_, ";
+	}
+	$c_array =~ s/, $//; # zap final comma
+	#warn $n;
+
+	print "/* $comment */
+static const unsigned char bitmap_data[] = {$c_array
+};\n";
+	
+}
+
 #
 # main function: process files found on the command line.
 # 
@@ -66,23 +86,23 @@ foreach (@ARGV)
 	#warn $pixel_bits;
 	
 	# target system is big-endian
-	my $hex_bytes = unpack('H*', pack('B*', $pixel_bits));
-	#warn $hex_bytes;
+	my @hex_bytes = unpack("(A2)*", unpack('H*', pack('B*', $pixel_bits)));
+	#warn @hex_bytes;
 
-	my $n = 0;
-	my $mm = '';
-	while ($hex_bytes =~ /(..)/g)
+	# if the image is exactly twice as tall as it is wide,
+	# split bytes in half: first half is actual bitmap, second is the mask
+	my $h2 = $img->{Height} / 2;
+	if ($img->{Width} == $h2)
 	{
-		$mm .= "\n\t" if ($n % ($img->{Width} / 8) == 0);
-		$mm .= "0x$1, ";
-		$n += 1;
+		my @bitmap_bytes = @hex_bytes[0 .. $img->{Height} - 1];
+		my @mask_bytes = @hex_bytes[$img->{Height} .. 2 * $img->{Height} - 1];
+		print_bitmap_array(\@bitmap_bytes, $img->{Width}, "$bmp_file bitmap $img->{Width}x$h2");
+		print_bitmap_array(  \@mask_bytes, $img->{Width}, "$bmp_file mask $img->{Width}x$h2");		
 	}
-	$mm =~ s/, $//; # zap final comma
-	#warn $n;
-
-	print "/* $bmp_file */
-static const unsigned char bitmap_data[/* $img->{Width}x$img->{Height} */] = {$mm
-};\n";
+	else
+	{
+		print_bitmap_array(\@hex_bytes, $img->{Width}, "$bmp_file $img->{Width}x$img->{Height}");		
+	}
 }
 
 
