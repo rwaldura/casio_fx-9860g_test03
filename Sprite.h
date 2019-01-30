@@ -33,6 +33,12 @@ class Sprite
 		{
 		}
 
+		~Sprite()
+		{
+			if (mask) delete mask;
+			if (bitmap) delete bitmap;
+		}
+
 		void draw(int x, int y) const;
 
 	private:
@@ -43,12 +49,25 @@ class Sprite
 class SpriteManager
 {
 	public:
-		SpriteManager();
-		~SpriteManager();
-		void load_all();
-		const Sprite* get(SpriteKind sk);
+		SpriteManager() {}
+
+		~SpriteManager()
+		{
+			for (int i = 0; i < MAX_SPRITES; i++)
+			{
+				if (sprites[i]) delete sprites[i];
+			}			
+		}
+
+		const Sprite* get(SpriteKind sk)
+		{
+			return sprites[sk];			
+		}
+
 		const Sprite* next_pattern(const Sprite* s);		
 		const Sprite* next_ball(const Sprite* s);		
+
+		void load_all();
 
 	private:
 		static const int MAX_SPRITES = 99;

@@ -7,6 +7,8 @@
  * Instead, sprites are defined inline with byte arrays.
  */
 
+#include <stdio.h>
+
 extern "C"
 {
 	#include "fxlib.h"
@@ -96,17 +98,74 @@ static const unsigned char mini_paddle_mask[] = {
 	0xff, 0xff
 };
 
-SpriteManager::SpriteManager()
+const Sprite* read_sprite(FileReader& r)
 {
-	;
+	int id = 0;
+	int width = 0, height = 0;
+	char* bitmap_str = new char[MAX_BITMAP_WIDTH * MAX_BITMAP_HEIGHT];
+	bool end = false;
+
+	// read one sprite definition from the file
+	char* line;
+	while (!end && line = r->read_line())
+	{
+		// skip comments: lines that start with "//"
+		if (strncmp(line, "//", 2)) 
+		{
+			// do nothing
+		}
+		// read the sprite ID
+		else if (strncmp(line, "ID=", 3))
+		{
+			id = atoi(line + 3);
+		}
+		// blank line signals end of sprite
+		else if (strlen(line) == 0)
+		{
+			end = true;
+		}
+		// read bitmap
+		else
+		{
+			if (width == 0) width = strlen(line);
+			strcat(bitmap_str, line);
+			height += 1;
+		}
+
+		delete line;
+	}
+
+	// invalid bitmap definition
+	if (!(strlen(bitmap_str) == width * height 
+		|| strlen(bitmap_str) == width * height * 2)))
+		return 0;
+
+	// parse the bitmap definition into actual bits
+  	unsigned char* bitmap = parse_bitmap_string(width, height, bitmap_str);
+	
+	unsigned char* mask = 0;
+	if (strlen(bitmap_str) == width * height * 2)
+	{
+		mask = parse_bitmap_string(width, height, bitmap_str + width * height);
+	}
+	
+	return new Sprite((SpriteKind) id, width, height, bitmap, mask);	
 }
 
-SpriteManager::~SpriteManager()
+unsigned char* parse_bitmap_string(int width, int height, const char* s)
 {
-	for (int i = 0; i < this->MAX_SPRITES; i++)
+	unsigned char bitmap[] = new unsigned char[width * height];
+
+	for (int i = 0; i < width * height; i++)
 	{
-		if (sprites[i]) delete sprites[i];
+		if (s[i] == '#')
+		{
+			// set bit to 1
+			bitmap[i] |= 1;
+		}
 	}
+
+	return bitmap;
 }
 
 void SpriteManager::load_all()
@@ -125,11 +184,6 @@ void SpriteManager::load_all()
 
 	sprites[MINI_PADDLE] = new Sprite(MINI_PADDLE, 16, 16, mini_paddle_bitmap, mini_paddle_mask);
 } 
-
-const Sprite* SpriteManager::get(SpriteKind sk)
-{
-	return sprites[sk];
-}
 
 const Sprite* SpriteManager::next_pattern(const Sprite* pattern)		
 {
