@@ -35,8 +35,8 @@ class Sprite
 
 		~Sprite()
 		{
-			if (mask) delete mask;
-			if (bitmap) delete bitmap;
+			delete mask;
+			delete bitmap;
 		}
 
 		void draw(int x, int y) const;
@@ -55,8 +55,8 @@ class SpriteManager
 		{
 			for (int i = 0; i < MAX_SPRITES; i++)
 			{
-				if (sprites[i]) delete sprites[i];
-			}			
+				delete sprites[i];
+			}		
 		}
 
 		const Sprite* get(SpriteKind sk)
@@ -67,6 +67,7 @@ class SpriteManager
 		const Sprite* next_pattern(const Sprite* s);		
 		const Sprite* next_ball(const Sprite* s);		
 
+		void load_file(const char* filename);
 		void load_all();
 
 	private:

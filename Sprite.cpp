@@ -98,7 +98,7 @@ static const unsigned char mini_paddle_mask[] = {
 	0xff, 0xff
 };
 
-const Sprite* read_sprite(FileReader& r)
+static const Sprite* read_sprite(FileReader& r)
 {
 	int id = 0;
 	int width = 0, height = 0;
@@ -152,20 +152,29 @@ const Sprite* read_sprite(FileReader& r)
 	return new Sprite((SpriteKind) id, width, height, bitmap, mask);	
 }
 
-unsigned char* parse_bitmap_string(int width, int height, const char* s)
+static unsigned char* parse_bitmap_string(int width, int height, const char* s)
 {
-	unsigned char bitmap[] = new unsigned char[width * height];
+	unsigned char bitmap[] = new unsigned char[width * height / 8](); // zero-initialized array
 
 	for (int i = 0; i < width * height; i++)
 	{
 		if (s[i] == '#')
-		{
-			// set bit to 1
-			bitmap[i] |= 1;
-		}
+			bitmap[i / 8] |= 1 << (i % 8);
 	}
 
 	return bitmap;
+}
+
+void SpriteManager::load_file(const char* filename)
+{
+	FileReader r = FileReader(filename);
+	while (!r.at_end())
+	{
+		const Sprite* s = read_sprite(r);
+
+		if (s)
+			sprites[s.kind] = s;
+	}
 }
 
 void SpriteManager::load_all()
@@ -228,11 +237,22 @@ void Sprite::draw(int x, int y) const
 		dg.WriteKind = IMB_WRITEKIND_OR;
 		Bdisp_WriteGraph_VRAM(&dg);
 	}
-	else
+	else // no mask: merely fill
 	{
-		// no mask: merely fill
 		dg.GraphData.pBitmap = (unsigned char*) bitmap;
 		dg.WriteKind = IMB_WRITEKIND_OVER;
 		Bdisp_WriteGraph_VRAM(&dg);		
 	}
+}
+
+/*
+ * Unit test
+ */
+int main(int argc, char* argv[])
+{
+	SpriteManager* m = new SpriteManager();
+	
+	delete m;
+
+	return 0;
 }
