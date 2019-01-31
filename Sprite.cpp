@@ -7,15 +7,13 @@
  * Instead, sprites are defined inline with byte arrays.
  */
 
-#include <stdio.h>
+#include "Sprite.h"
+#include <string.h>
 
 extern "C"
 {
 	#include "fxlib.h"
 }
-
-#include "Sprite.h"
-
 
 static const unsigned char light_pattern_bmap[] = {
     0x00, 0x22, 0x44, 0x00, 0x00, 0x22, 0x44, 0x00
@@ -98,7 +96,7 @@ static const unsigned char mini_paddle_mask[] = {
 	0xff, 0xff
 };
 
-static const Sprite* read_sprite(FileReader& r)
+static const Sprite* read_sprite(FileReader* r)
 {
 	int id = 0;
 	int width = 0, height = 0;
@@ -167,8 +165,8 @@ static unsigned char* parse_bitmap_string(int width, int height, const char* s)
 
 void SpriteManager::load_file(const char* filename)
 {
-	FileReader r = FileReader(filename);
-	while (!r.at_end())
+	FileReader* r = new FileReader(filename);
+	while (!r->at_end())
 	{
 		const Sprite* s = read_sprite(r);
 
@@ -245,14 +243,15 @@ void Sprite::draw(int x, int y) const
 	}
 }
 
-/*
- * Unit test
- */
+#ifdef UNIT_TESTING
+void Bdisp_WriteGraph_VRAM(const DISPGRAPH *WriteGraph)
+{}
+
 int main(int argc, char* argv[])
 {
 	SpriteManager* m = new SpriteManager();
-	
+	m->load_file("sprites.txt");
 	delete m;
-
 	return 0;
 }
+#endif
