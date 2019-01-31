@@ -64,7 +64,11 @@ void FileReader::fill_buffer()
 }
 
 /*
- * Returns 0 on empty line, or EOF.
+ * Returns the next line, without the terminal '\n'.
+ * Zero-length strings are returned for blank lines.
+ * Returns 0 on EOF.
+ * The string returned is freshly allocated, and will need to be
+ * disposed of.
  */
 char* FileReader::read_line()
 {
@@ -75,24 +79,19 @@ char* FileReader::read_line()
 		fill_buffer();
 	}
 
-	bool eol = false;
-	int j;
-	for (j = i; j < n; j++)
-	{
-		if (buffer[j] == '\n')
-		{
-			eol = true;
-			break;
-		}
-	}
+	int j = i; // determine position of the next newline
+	while (j < n && buffer[j++] != '\n') {}
 
 	char* line = 0;
-	if (eol && j > i)
+	if (i < j && j < n) // j >= n means EOF
 	{
 		line = new char[1 + (j - i)](); // + 1 for final '\0'
-		strncpy(line, buffer + i, j - i);
+		strncpy(line, buffer + i, j - i - 1);
 	}
 
+	// reset our index into the buffer
+	i = j;
+	
 	return line;
 }
 
@@ -107,7 +106,7 @@ bool FileReader::at_end()
 int main(int argc, char* argv[])
 {
 	FileReader* r = new FileReader();
-	r->open("sprites/sprites.txt");
+	r->open("sprites.txt");
 
 	char* l; int n = 0;
 	while (l = r->read_line())
@@ -117,6 +116,7 @@ int main(int argc, char* argv[])
 			<< " - " 
 			<< l 
 			<< std::endl;
+		delete l;
 	}
 
 	delete r;
