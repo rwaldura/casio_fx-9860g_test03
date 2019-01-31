@@ -1,5 +1,5 @@
 /*
- *
+ * Implementation of class FileReader.
  */
  
 #include "FileReader.h"
@@ -7,9 +7,10 @@
 #include <string.h>
 
 #ifdef UNIT_TESTING
-#include <stdio.h>
+	#include <errno.h>
+	#include <stdio.h>
 #else
-#include "fxlib.h"
+	#include "fxlib.h"
 #endif 
 
 FileReader::FileReader()
@@ -45,9 +46,13 @@ int FileReader::open(const char* file_name)
 {
 #ifdef UNIT_TESTING
 	file_handle = fopen(file_name, "r");
-	return (file_handle) ? 0 /* no error */ : 1; // errno; 
+    if (file_handle) setvbuf(file_handle, new char[13], _IOFBF, 13); // for debugging purposes
+	return (file_handle) ? 0 /* no error */ : errno; 
 #else
-	file_handle = Bfile_OpenFile((const FONTCHARACTER*) file_name, _OPENMODE_READ);
+	FONTCHARACTER f[] = new FONTCHARACTER[1 + strlen(file_name)];
+	for (int j = 0; j < 1 + strlen(file_name); j++)
+		f[j] = file_name[j];
+	file_handle = Bfile_OpenFile(f, _OPENMODE_READ);
 	return (file_handle > 0) 0 /* no error */ : file_handle; 
 #endif 
 }
@@ -57,9 +62,9 @@ void FileReader::fill_buffer()
 	i = 0;
 	n =  
 #ifdef UNIT_TESTING
-		fread(buffer, sizeof(char), BUFSIZ, file_handle);
+	fread(buffer, sizeof(char), BUFSIZ, file_handle);
 #else
-		Bfile_ReadFile(file_handle, buffer, BUFSIZ, -1);
+	Bfile_ReadFile(file_handle, buffer, BUFSIZ, -1);
 #endif
 }
 
@@ -85,8 +90,8 @@ char* FileReader::read_line()
 	char* line = 0;
 	if (i < j && j < n) // j >= n means EOF
 	{
-		line = new char[1 + (j - i)](); // + 1 for final '\0'
-		strncpy(line, buffer + i, j - i - 1);
+		line = new char[1 + j - i](); // +1 for final '\0'
+		strncpy(line, buffer + i, j - i - 1); // -1 to skip the final '\n'
 	}
 
 	// reset our index into the buffer
@@ -102,7 +107,6 @@ bool FileReader::at_end()
 
 #ifdef UNIT_TESTING
 #include <iostream>
-
 int main(int argc, char* argv[])
 {
 	FileReader* r = new FileReader();

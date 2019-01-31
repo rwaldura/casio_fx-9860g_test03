@@ -1,6 +1,5 @@
 /*
- * Read a file line by line.
- * Ignore all LF and CR characters.
+ * Read a file line by line, ignoring all '\n' characters.
  */
 
 #include <stdio.h>
