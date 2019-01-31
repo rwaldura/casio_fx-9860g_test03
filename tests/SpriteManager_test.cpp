@@ -1,7 +1,10 @@
 #include "Sprite.h"
 
-void Bdisp_WriteGraph_VRAM(const DISPGRAPH *WriteGraph)
-{}
+extern "C" 
+{
+	#include "fxlib.h"
+	void Bdisp_WriteGraph_VRAM(const DISPGRAPH *WriteGraph) {}
+}
 
 int main(int argc, char* argv[])
 {
