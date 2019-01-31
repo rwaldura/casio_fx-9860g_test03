@@ -4,6 +4,9 @@
 
 #include <stdio.h>
 
+#ifndef FILE_READER_H
+#define FILE_READER_H
+
 class FileReader
 {
 	public:
@@ -27,3 +30,5 @@ class FileReader
 		int	file_handle;
 #endif
 };
+
+#endif

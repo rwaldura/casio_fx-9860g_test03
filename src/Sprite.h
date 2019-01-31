@@ -46,6 +46,9 @@ class Sprite
 		const unsigned char *bitmap;	
 };
 
+/*
+ * Loads the sprites into memory.
+ */
 class SpriteManager
 {
 	public:

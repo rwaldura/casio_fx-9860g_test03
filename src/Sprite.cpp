@@ -7,8 +7,10 @@
  * Instead, sprites are defined inline with byte arrays.
  */
 
-#include "Sprite.h"
+#include <stdlib.h>
 #include <string.h>
+#include "Sprite.h"
+#include "FileReader.h"
 
 extern "C"
 {
@@ -96,16 +98,31 @@ static const unsigned char mini_paddle_mask[] = {
 	0xff, 0xff
 };
 
+static const int MAX_BITMAP_SIZE = IM_VRAM_SIZE; // in bytes
+
+static unsigned char* parse_bitmap_string(int width, int height, const char* s)
+{
+	unsigned char* bitmap = new unsigned char[width * height / 8](); // zero-initialized array
+
+	for (int i = 0; i < width * height; i++)
+	{
+		if (s[i] == '#')
+			bitmap[i / 8] |= 1 << (i % 8);
+	}
+
+	return bitmap;
+}
+
 static const Sprite* read_sprite(FileReader* r)
 {
 	int id = 0;
 	int width = 0, height = 0;
-	char* bitmap_str = new char[MAX_BITMAP_WIDTH * MAX_BITMAP_HEIGHT];
+	char* bitmap_str = new char[MAX_BITMAP_SIZE];
 	bool end = false;
 
 	// read one sprite definition from the file
 	char* line;
-	while (!end && line = r->read_line())
+	while (!end && (line = r->read_line()))
 	{
 		// skip comments: lines that start with "//"
 		if (strncmp(line, "//", 2)) 
@@ -135,7 +152,7 @@ static const Sprite* read_sprite(FileReader* r)
 
 	// invalid bitmap definition
 	if (!(strlen(bitmap_str) == width * height 
-		|| strlen(bitmap_str) == width * height * 2)))
+		|| strlen(bitmap_str) == width * height * 2))
 		return 0;
 
 	// parse the bitmap definition into actual bits
@@ -150,28 +167,16 @@ static const Sprite* read_sprite(FileReader* r)
 	return new Sprite((SpriteKind) id, width, height, bitmap, mask);	
 }
 
-static unsigned char* parse_bitmap_string(int width, int height, const char* s)
-{
-	unsigned char bitmap[] = new unsigned char[width * height / 8](); // zero-initialized array
-
-	for (int i = 0; i < width * height; i++)
-	{
-		if (s[i] == '#')
-			bitmap[i / 8] |= 1 << (i % 8);
-	}
-
-	return bitmap;
-}
-
 void SpriteManager::load_file(const char* filename)
 {
-	FileReader* r = new FileReader(filename);
+	FileReader* r = new FileReader();
+	r->open(filename); // or die
 	while (!r->at_end())
 	{
 		const Sprite* s = read_sprite(r);
 
 		if (s)
-			sprites[s.kind] = s;
+			sprites[s->kind] = s;
 	}
 }
 
@@ -242,16 +247,3 @@ void Sprite::draw(int x, int y) const
 		Bdisp_WriteGraph_VRAM(&dg);		
 	}
 }
-
-#ifdef UNIT_TESTING
-void Bdisp_WriteGraph_VRAM(const DISPGRAPH *WriteGraph)
-{}
-
-int main(int argc, char* argv[])
-{
-	SpriteManager* m = new SpriteManager();
-	m->load_file("sprites.txt");
-	delete m;
-	return 0;
-}
-#endif
