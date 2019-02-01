@@ -1,3 +1,5 @@
 Debug
 INIT
 .DS_Store
+*.o
+*.dSYM

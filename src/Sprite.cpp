@@ -127,7 +127,6 @@ static const Sprite* read_sprite(FileReader* r)
 		// skip comments: lines that start with "//"
 		if (strncmp(line, "//", 2)) 
 		{
-			// do nothing
 		}
 		// read the sprite ID
 		else if (strncmp(line, "ID=", 3))
@@ -167,10 +166,12 @@ static const Sprite* read_sprite(FileReader* r)
 	return new Sprite((SpriteKind) id, width, height, bitmap, mask);	
 }
 
-void SpriteManager::load_file(const char* filename)
+int SpriteManager::load_file(const char* filename)
 {
 	FileReader* r = new FileReader();
-	r->open(filename); // or die
+	int err = r->open(filename);
+	if (err) return err;
+
 	while (!r->at_end())
 	{
 		const Sprite* s = read_sprite(r);

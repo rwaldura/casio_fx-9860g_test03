@@ -70,7 +70,7 @@ class SpriteManager
 		const Sprite* next_pattern(const Sprite* s);		
 		const Sprite* next_ball(const Sprite* s);		
 
-		void load_file(const char* filename);
+		int load_file(const char* filename); // 0 => no error
 		void load_all();
 
 	private:
