@@ -2,15 +2,14 @@
  * Implementation of class FileReader.
  */
  
-#include "FileReader.h"
 #include <stdlib.h>
 #include <string.h>
+#include "fxlib.h"
+#include "FileReader.h"
 
 #ifdef UNIT_TESTING
 	#include <errno.h>
 	#include <stdio.h>
-#else
-	#include "fxlib.h"
 #endif 
 
 FileReader::FileReader()
@@ -40,6 +39,23 @@ void FileReader::close()
 }
 
 /*
+ * Convert a C string to a Casio FONTCHARACTER string.
+ * The returned value is freshly allocated, and should therefore 
+ * be disposed of properly, i.e. deleted.
+ */
+inline FONTCHARACTER* strtoFONTCHARACTER(const char* s)
+{
+	FONTCHARACTER* f = new FONTCHARACTER[1 + strlen(s)];
+
+	for (int j = 0; j < 1 + strlen(s); j++)
+	{
+		f[j] = s[j];		
+	}
+
+	return f;
+}
+
+/*
  * Returns zero on success, error code otherwise
  */
 int FileReader::open(const char* file_name)
@@ -49,10 +65,9 @@ int FileReader::open(const char* file_name)
     if (file_handle) setvbuf(file_handle, new char[13], _IOFBF, 13); // for debugging purposes
 	return (file_handle) ? 0 /* no error */ : errno; 
 #else
-	FONTCHARACTER f[] = new FONTCHARACTER[1 + strlen(file_name)];
-	for (int j = 0; j < 1 + strlen(file_name); j++)
-		f[j] = file_name[j];
-	file_handle = Bfile_OpenFile(f, _OPENMODE_READ);
+	FONTCHARACTER* fc = strtoFONTCHARACTER(file_name);
+	file_handle = Bfile_OpenFile(fc, _OPENMODE_READ);
+	delete fc;
 	return (file_handle > 0) 0 /* no error */ : file_handle; 
 #endif 
 }
@@ -90,11 +105,11 @@ char* FileReader::read_line()
 	char* line = 0;
 	if (i < j && j < n) // j >= n means EOF
 	{
-		line = new char[1 + j - i](); // +1 for final '\0'
+		line = new char[j - i](); // zero-initialized
 		strncpy(line, buffer + i, j - i - 1); // -1 to skip the final '\n'
 	}
 
-	// reset our index into the buffer
+	// reset our index into the buffer, right past the newline
 	i = j;
 	
 	return line;
