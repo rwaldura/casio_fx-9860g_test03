@@ -27,6 +27,8 @@ class Sprite
 		const SpriteKind kind;
 		const unsigned int width;
 		const unsigned int height;
+		const unsigned char *const mask;
+		const unsigned char *const bitmap;	
 
 		Sprite(SpriteKind k, int w, int h, const unsigned char *bm, const unsigned char *m = 0)
 			: kind(k), width(w), height(h), bitmap(bm), mask(m)
@@ -40,10 +42,6 @@ class Sprite
 		}
 
 		void draw(int x, int y) const;
-
-	private:
-		const unsigned char *mask;
-		const unsigned char *bitmap;	
 };
 
 /*

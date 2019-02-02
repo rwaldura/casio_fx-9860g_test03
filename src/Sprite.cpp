@@ -125,11 +125,12 @@ static const Sprite* read_sprite(FileReader* r)
 	while (!end && (line = r->read_line()))
 	{
 		// skip comments: lines that start with "//"
-		if (strncmp(line, "//", 2)) 
+		if (strncmp(line, "//", 2) == 0) 
 		{
+			// skip
 		}
 		// read the sprite ID
-		else if (strncmp(line, "ID=", 3))
+		else if (strncmp(line, "ID=", 3) == 0)
 		{
 			id = atoi(line + 3);
 		}
@@ -179,6 +180,8 @@ int SpriteManager::load_file(const char* filename)
 		if (s)
 			sprites[s->kind] = s;
 	}
+
+	return 0; // no error
 }
 
 void SpriteManager::load_all()
