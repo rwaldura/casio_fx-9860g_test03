@@ -47,9 +47,10 @@ inline FONTCHARACTER* strtoFONTCHARACTER(const char* s)
 {
 	FONTCHARACTER* f = new FONTCHARACTER[1 + strlen(s)];
 
+	// also copy the terminating '\0'
 	for (int j = 0; j < 1 + strlen(s); j++)
 	{
-		f[j] = s[j];		
+		f[j] = s[j];
 	}
 
 	return f;
@@ -77,9 +78,9 @@ void FileReader::fill_buffer()
 	i = 0;
 	n =  
 #ifdef UNIT_TESTING
-	fread(buffer, sizeof(char), BUFSIZ, file_handle);
+	fread(buffer, sizeof(char), MAX_LINE, file_handle);
 #else
-	Bfile_ReadFile(file_handle, buffer, BUFSIZ, -1);
+	Bfile_ReadFile(file_handle, buffer, MAX_LINE, -1);
 #endif
 }
 
@@ -88,7 +89,7 @@ void FileReader::fill_buffer()
  * Zero-length strings are returned for blank lines.
  * Returns 0 on EOF.
  * The string returned is freshly allocated, and will need to be
- * disposed of.
+ * disposed of, with "delete".
  */
 char* FileReader::read_line()
 {

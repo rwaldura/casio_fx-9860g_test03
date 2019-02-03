@@ -98,24 +98,32 @@ static const unsigned char mini_paddle_mask[] = {
 	0xff, 0xff
 };
 
-static const int MAX_BITMAP_SIZE = IM_VRAM_SIZE; // in bytes
+static const int MAX_BITMAP_SIZE = 2 * 16 * 16; // in pixels
+static const int BPC = 8; // bits per char
+// 1 pixel == 1 bit
 
+/*
+ * Turn the string "#..##" into the bits 10011.
+ */
 static unsigned char* parse_bitmap_string(int width, int height, const char* s)
 {
-	unsigned char* bitmap = new unsigned char[width * height / 8](); // zero-initialized array
+	unsigned char* bitmap = new unsigned char[width * height / BPC](); // zero-initialized array
 
 	for (int i = 0; i < width * height; i++)
 	{
 		// lit black pixel is marked by '#' character
 		if (s[i] == '#')
 		{
-			bitmap[i / 8] |= 1 << (7 - i % 8);			
+			bitmap[i / BPC] |= 1 << (7 - i % BPC);			
 		}
 	}
 
 	return bitmap;
 }
 
+/*
+ * Instantiate a new sprite. 
+ */
 static const Sprite* build_sprite(int id, int width, int height, const char* bitmap_str)
 {
 	const Sprite* s;
@@ -144,6 +152,9 @@ static const Sprite* build_sprite(int id, int width, int height, const char* bit
 	return s;
 }
 
+/*
+ * Read one sprite definition from the reader r, and return the sprite instance. 
+ */
 static const Sprite* read_sprite(FileReader* r)
 {
 	int id = 0;
@@ -174,6 +185,7 @@ static const Sprite* read_sprite(FileReader* r)
 		else
 		{
 			if (width == 0) width = strlen(line);
+			if (strlen(line) + strlen(bitmap_str) > MAX_BITMAP_SIZE) return 0; // bitmap is too large
 			strcat(bitmap_str, line);
 			height += 1;
 		}
@@ -186,6 +198,9 @@ static const Sprite* read_sprite(FileReader* r)
 	return s;
 }
 
+/*
+ * Read and instantiate all sprites defined in the file.
+ */
 int SpriteManager::load_file(const char* filename)
 {
 	FileReader* r = new FileReader();
@@ -195,11 +210,10 @@ int SpriteManager::load_file(const char* filename)
 	while (!r->at_end())
 	{
 		const Sprite* s = read_sprite(r);
-
-		if (s)
-			sprites[s->kind] = s;
+		if (s) sprites[s->kind] = s;
 	}
 
+	delete r;
 	return 0; // no error
 }
 
@@ -236,12 +250,14 @@ const Sprite* SpriteManager::next_ball(const Sprite* ball)
 		next_kind = BLACK_BALL;
 	else if (ball->kind == BLACK_BALL)
 		next_kind = MINI_BALL;
+	else
+		return 0;
 
 	return this->get(next_kind);
 }
 
 /* 
- * Draw a sprite to VRAM: punch a hole in the bitmap by ANDing the mask first,
+ * Draw a sprite to VRAM: punch a hole in the VRAM with the mask,
  * then insert the actual sprite bitmap.
  */
 void Sprite::draw(int x, int y) const

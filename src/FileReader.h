@@ -20,7 +20,8 @@ class FileReader
 	private:
 		void fill_buffer();
 
-		char buffer[BUFSIZ];
+		static const int MAX_LINE = 64;
+		char buffer[MAX_LINE];
 		int i; // index into buffer
 		int n; // current buffer size
 

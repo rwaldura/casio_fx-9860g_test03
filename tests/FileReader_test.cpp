@@ -28,9 +28,9 @@ int main(int argc, char* argv[])
 	FileReader* r = new FileReader();
 	r->open("FileReader_test.txt");
 
-	assertEqual("abc", r->read_line());
+	assertEqual("abc_def_ghi_jkl", r->read_line());
 	assertEqual("", r->read_line());
-	assertEqual("def", r->read_line());
+	assertEqual("###_***_xyz", r->read_line());
 	assertTrue(0 == r->read_line(), "0 line");
 	assertTrue(0 == r->read_line(), "0 line again");
 	assertTrue(r->at_end(), "at end");

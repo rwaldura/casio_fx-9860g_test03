@@ -28,7 +28,8 @@ class Sprite
 		const unsigned int width;
 		const unsigned int height;
 
-		// these are kept public for unit-testing; they should be private otherwise
+		// these are made public for unit-testing purposes
+		// they should be private otherwise
 		const unsigned char *const mask;
 		const unsigned char *const bitmap;	
 
@@ -42,6 +43,7 @@ class Sprite
 			delete bitmap;
 		}
 
+		// draw the sprite into VRAM
 		void draw(int x, int y) const;
 };
 
@@ -56,9 +58,7 @@ class SpriteManager
 		~SpriteManager()
 		{
 			for (int i = 0; i < MAX_SPRITES; i++)
-			{
 				delete sprites[i];
-			}		
 		}
 
 		const Sprite* get(SpriteKind sk)
