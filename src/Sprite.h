@@ -27,13 +27,14 @@ class Sprite
 		const SpriteKind kind;
 		const unsigned int width;
 		const unsigned int height;
+
+		// these are kept public for unit-testing; they should be private otherwise
 		const unsigned char *const mask;
 		const unsigned char *const bitmap;	
 
 		Sprite(SpriteKind k, int w, int h, const unsigned char *bm, const unsigned char *m = 0)
 			: kind(k), width(w), height(h), bitmap(bm), mask(m)
-		{
-		}
+		{}
 
 		~Sprite()
 		{
@@ -72,7 +73,7 @@ class SpriteManager
 		void load_all();
 
 	private:
-		static const int MAX_SPRITES = 99;
+		static const int MAX_SPRITES = 32;
 		const Sprite* sprites[MAX_SPRITES];
 };
 

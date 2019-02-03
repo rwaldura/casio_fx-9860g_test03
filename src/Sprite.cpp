@@ -116,11 +116,39 @@ static unsigned char* parse_bitmap_string(int width, int height, const char* s)
 	return bitmap;
 }
 
+static const Sprite* build_sprite(int id, int width, int height, const char* bitmap_str)
+{
+	const Sprite* s;
+
+	if (strlen(bitmap_str) == width * height)
+	{
+		// parse the bitmap definition into actual bits
+	  	unsigned char* bitmap = parse_bitmap_string(width, height, bitmap_str);
+		s = new Sprite((SpriteKind) id, width, height, bitmap);	
+	}
+	else if (strlen(bitmap_str) == 2 * width * height)
+	{
+		height /= 2;
+
+		// parse the bitmap definition into actual bits
+	  	unsigned char* bmap = parse_bitmap_string(width, height, bitmap_str);	
+		unsigned char* mask = parse_bitmap_string(width, height, bitmap_str + width * height);
+
+		s = new Sprite((SpriteKind) id, width, height, bmap, mask);		
+	}
+	else // invalid bitmap definition
+	{
+		s = 0;
+	}
+		
+	return s;
+}
+
 static const Sprite* read_sprite(FileReader* r)
 {
 	int id = 0;
 	int width = 0, height = 0;
-	char* bitmap_str = new char[MAX_BITMAP_SIZE];
+	char* bitmap_str = new char[MAX_BITMAP_SIZE]();
 	bool end = false;
 
 	// read one sprite definition from the file
@@ -153,23 +181,9 @@ static const Sprite* read_sprite(FileReader* r)
 		delete line;
 	}
 
-	// invalid bitmap definition
-	if (!(strlen(bitmap_str) == width * height 
-		|| strlen(bitmap_str) == width * height * 2))
-		return 0;
-
-	// parse the bitmap definition into actual bits
-  	unsigned char* bitmap = parse_bitmap_string(width, height, bitmap_str);
-	
-	unsigned char* mask = 0;
-	if (strlen(bitmap_str) == width * height * 2)
-	{
-		mask = parse_bitmap_string(width, height, bitmap_str + width * height);
-	}
-	
+	const Sprite* s = build_sprite(id, width, height, bitmap_str);
 	delete bitmap_str;
-
-	return new Sprite((SpriteKind) id, width, height, bitmap, mask);	
+	return s;
 }
 
 int SpriteManager::load_file(const char* filename)
