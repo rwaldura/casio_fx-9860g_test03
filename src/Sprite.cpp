@@ -106,8 +106,11 @@ static unsigned char* parse_bitmap_string(int width, int height, const char* s)
 
 	for (int i = 0; i < width * height; i++)
 	{
+		// lit black pixel is marked by '#' character
 		if (s[i] == '#')
-			bitmap[i / 8] |= 1 << (i % 8);
+		{
+			bitmap[i / 8] |= 1 << (7 - i % 8);			
+		}
 	}
 
 	return bitmap;
@@ -164,6 +167,8 @@ static const Sprite* read_sprite(FileReader* r)
 		mask = parse_bitmap_string(width, height, bitmap_str + width * height);
 	}
 	
+	delete bitmap_str;
+
 	return new Sprite((SpriteKind) id, width, height, bitmap, mask);	
 }
 
