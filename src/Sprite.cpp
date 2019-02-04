@@ -7,8 +7,6 @@
  * Instead, sprites are defined inline with byte arrays.
  */
 
-#include <stdlib.h>
-#include <string.h>
 #include "Sprite.h"
 #include "FileReader.h"
 
@@ -98,104 +96,35 @@ static const unsigned char mini_paddle_mask[] = {
 	0xff, 0xff
 };
 
-static const int MAX_BITMAP_SIZE = 2 * 16 * 16; // in pixels
-static const int BPC = 8; // bits per char
-// 1 pixel == 1 bit
-
-/*
- * Turn the string "#..##" into the bits 10011.
+/* 
+ * Draw a sprite to VRAM: punch a hole in the VRAM with the mask,
+ * then insert the actual sprite bitmap.
  */
-static unsigned char* parse_bitmap_string(int width, int height, const char* s)
+void Sprite::draw(int x, int y) const
 {
-	unsigned char* bitmap = new unsigned char[width * height / BPC](); // zero-initialized array
+	DISPGRAPH dg = { x, y };
+	dg.GraphData.width = width;
+	dg.GraphData.height = height;
+	dg.WriteModify = IMB_WRITEMODIFY_NORMAL;
 
-	for (int i = 0; i < width * height; i++)
+	if (mask)
 	{
-		// lit black pixel is marked by '#' character
-		if (s[i] == '#')
-		{
-			bitmap[i / BPC] |= 1 << (7 - i % BPC);			
-		}
+		// mask first to clear the area
+		dg.GraphData.pBitmap = (unsigned char*) mask;
+		dg.WriteKind = IMB_WRITEKIND_AND;
+		Bdisp_WriteGraph_VRAM(&dg);		
+
+		// the actual sprite
+		dg.GraphData.pBitmap = (unsigned char*) bitmap;
+		dg.WriteKind = IMB_WRITEKIND_OR;
+		Bdisp_WriteGraph_VRAM(&dg);
 	}
-
-	return bitmap;
-}
-
-/*
- * Instantiate a new sprite. 
- */
-static const Sprite* build_sprite(int id, int width, int height, const char* bitmap_str)
-{
-	const Sprite* s;
-
-	if (strlen(bitmap_str) == width * height)
+	else // no mask: merely fill
 	{
-		// parse the bitmap definition into actual bits
-	  	unsigned char* bitmap = parse_bitmap_string(width, height, bitmap_str);
-		s = new Sprite((SpriteKind) id, width, height, bitmap);	
+		dg.GraphData.pBitmap = (unsigned char*) bitmap;
+		dg.WriteKind = IMB_WRITEKIND_OVER;
+		Bdisp_WriteGraph_VRAM(&dg);		
 	}
-	else if (strlen(bitmap_str) == 2 * width * height)
-	{
-		height /= 2;
-
-		// parse the bitmap definition into actual bits
-	  	unsigned char* bmap = parse_bitmap_string(width, height, bitmap_str);	
-		unsigned char* mask = parse_bitmap_string(width, height, bitmap_str + width * height);
-
-		s = new Sprite((SpriteKind) id, width, height, bmap, mask);		
-	}
-	else // invalid bitmap definition
-	{
-		s = 0;
-	}
-		
-	return s;
-}
-
-/*
- * Read one sprite definition from the reader r, and return the sprite instance. 
- */
-static const Sprite* read_sprite(FileReader* r)
-{
-	int id = 0;
-	int width = 0, height = 0;
-	char* bitmap_str = new char[MAX_BITMAP_SIZE]();
-	bool end = false;
-
-	// read one sprite definition from the file
-	char* line;
-	while (!end && (line = r->read_line()))
-	{
-		// skip comments: lines that start with "//"
-		if (strncmp(line, "//", 2) == 0) 
-		{
-			// skip
-		}
-		// read the sprite ID
-		else if (strncmp(line, "ID=", 3) == 0)
-		{
-			id = atoi(line + 3);
-		}
-		// blank line signals end of sprite
-		else if (strlen(line) == 0)
-		{
-			end = true;
-		}
-		// read bitmap
-		else
-		{
-			if (width == 0) width = strlen(line);
-			if (strlen(line) + strlen(bitmap_str) > MAX_BITMAP_SIZE) return 0; // bitmap is too large
-			strcat(bitmap_str, line);
-			height += 1;
-		}
-
-		delete line;
-	}
-
-	const Sprite* s = build_sprite(id, width, height, bitmap_str);
-	delete bitmap_str;
-	return s;
 }
 
 /*
@@ -205,17 +134,17 @@ int SpriteManager::load_file(const char* filename)
 {
 	loaded_from_file = true;
 
-	FileReader* r = new FileReader();
-	int err = r->open(filename);
+	FileReader r;
+	int err = r.open(filename);
 	if (err) return err;
 
-	while (!r->at_end())
+	SpriteBuilder sb = SpriteBuilder(r);
+	while (!sb.is_done())
 	{
-		const Sprite* s = read_sprite(r);
+		const Sprite* s = sb.build_sprite();
 		if (s) sprites[s->kind] = s;
 	}
 
-	delete r;
 	return 0; // no error
 }
 
@@ -256,35 +185,4 @@ const Sprite* SpriteManager::next_ball(const Sprite* ball)
 		return 0;
 
 	return this->get(next_kind);
-}
-
-/* 
- * Draw a sprite to VRAM: punch a hole in the VRAM with the mask,
- * then insert the actual sprite bitmap.
- */
-void Sprite::draw(int x, int y) const
-{
-	DISPGRAPH dg = { x, y };
-	dg.GraphData.width = width;
-	dg.GraphData.height = height;
-	dg.WriteModify = IMB_WRITEMODIFY_NORMAL;
-
-	if (mask)
-	{
-		// mask first to clear the area
-		dg.GraphData.pBitmap = (unsigned char*) mask;
-		dg.WriteKind = IMB_WRITEKIND_AND;
-		Bdisp_WriteGraph_VRAM(&dg);		
-
-		// the actual sprite
-		dg.GraphData.pBitmap = (unsigned char*) bitmap;
-		dg.WriteKind = IMB_WRITEKIND_OR;
-		Bdisp_WriteGraph_VRAM(&dg);
-	}
-	else // no mask: merely fill
-	{
-		dg.GraphData.pBitmap = (unsigned char*) bitmap;
-		dg.WriteKind = IMB_WRITEKIND_OVER;
-		Bdisp_WriteGraph_VRAM(&dg);		
-	}
 }

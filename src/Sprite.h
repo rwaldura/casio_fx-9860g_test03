@@ -7,6 +7,8 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
+#include "FileReader.h"
+
 enum SpriteKind
 {
 	NULL_SPRITE,
@@ -30,8 +32,8 @@ class Sprite
 
 		// these are made public for unit-testing purposes
 		// they should be private otherwise
-		const unsigned char *const mask;
 		const unsigned char *const bitmap;	
+		const unsigned char *const mask;
 
 		Sprite(SpriteKind k, int w, int h, const unsigned char *bm, const unsigned char *m = 0)
 			: kind(k), width(w), height(h), bitmap(bm), mask(m)
@@ -48,14 +50,13 @@ class Sprite
 };
 
 /*
- * Loads the sprites into memory.
+ * Keeper of the sprites. Loads them into memory.
  */
 class SpriteManager
 {
 	public:
 		SpriteManager() : loaded_from_file(false) 
-		{
-		}
+		{}
 
 		~SpriteManager()
 		{
@@ -79,6 +80,29 @@ class SpriteManager
 		static const int MAX_SPRITES = 32;
 		const Sprite* sprites[MAX_SPRITES];
 		bool loaded_from_file;
+};
+
+/*
+ * Reads the sprites from file, and instantiate them.
+ */
+class SpriteBuilder
+{
+	public:
+		SpriteBuilder(FileReader& r) : reader(r) 
+		{}
+
+		const Sprite* build_sprite();
+
+		bool is_done()
+		{
+			return reader.at_end();
+		}
+
+		unsigned char* parse_bitmap_string(int width, int height, const char* s);
+		const Sprite* _build_sprite(int id, int width, int height, const char* bitmap_str);
+
+	private:
+		FileReader& reader;
 };
 
 #endif

@@ -4,6 +4,7 @@
  */
 
 #include <stdlib.h>
+
 #include "Sprite.h"
 #include "Game.h"
 

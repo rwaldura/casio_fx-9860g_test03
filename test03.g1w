@@ -16,6 +16,7 @@ SourceFile=:src\FileReader.cpp
 SourceFile=:src\test03_main.cpp
 SourceFile=:src\Sprite.cpp
 SourceFile=:src\test03.c
+SourceFile=:src\SpriteBuilder.cpp
 HeaderFile=:src\FileReader.h
 HeaderFile=:src\Game.h
 HeaderFile=:src\Sprite.h

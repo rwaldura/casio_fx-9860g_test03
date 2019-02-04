@@ -1,10 +1,12 @@
 #include "Sprite.h"
 #include <iostream>
+#include <list>
 
-extern "C" 
+extern "C"
 {
 	#include "fxlib.h"
-	void Bdisp_WriteGraph_VRAM(const DISPGRAPH *WriteGraph) {}
+	void Bdisp_WriteGraph_VRAM(const DISPGRAPH *WriteGraph)
+	{}
 }
 
 using namespace std;
@@ -18,22 +20,24 @@ void assertTrue(bool c, const char* mesg = "")
 	}
 }
 
-const char* TEST_FILE = "SpriteManager_test.txt";
+const char* TEST_FILE = "SpriteBuilder_test.txt";
 
 int main(int argc, char* argv[])
 {
-	SpriteManager* m = new SpriteManager();
-	
-	int err = m->load_file(TEST_FILE);
-	if (err) 
-	{
-		cerr << "Error " << err 
-			<< " in loading file: " << TEST_FILE
-			<< endl;
-		return 1;
-	}
+	list<const Sprite*> sprites;
 
-	const Sprite* s = m->get(BLACK_PATTERN);
+	FileReader r;
+	int err = r.open(TEST_FILE);
+	assertTrue(err == 0, "opening test file");
+
+	SpriteBuilder sb = SpriteBuilder(r);
+	while (!sb.is_done())
+	{
+		const Sprite* s = sb.build_sprite();
+		sprites.push_back(s);	
+	}
+	
+	const Sprite* s = sprites.front(); sprites.pop_front();
 	assertTrue(s != 0, "null");
 	assertTrue(s->kind == BLACK_PATTERN, "id");
 	assertTrue(s->width == 8, "width");
@@ -49,7 +53,7 @@ int main(int argc, char* argv[])
 	assertTrue(s->bitmap[7] == 0x00, "bitmap7");
 	assertTrue(s->mask == 0, "mask");
 
-	s = m->get(LIGHT_PATTERN);
+	s = sprites.front(); sprites.pop_front();
 	assertTrue(s != 0, "null");
 	assertTrue(s->kind == LIGHT_PATTERN, "id");
 	assertTrue(s->width == 8, "width");
@@ -73,6 +77,5 @@ int main(int argc, char* argv[])
 	assertTrue(s->mask[6] == 0xff, "mask0");
 	assertTrue(s->mask[7] == 0xff, "mask0");
 
-	delete m;
 	return 0;
 }

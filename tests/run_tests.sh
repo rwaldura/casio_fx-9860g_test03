@@ -4,7 +4,7 @@
 #
 
 rm -f FileReader_test
-g++ -g -DUNIT_TESTING -I../src -I. ../src/FileReader.cpp FileReader_test.cpp -o FileReader_test &&
+g++ -Wall -g -DUNIT_TESTING -I../src -I. ../src/FileReader.cpp FileReader_test.cpp -o FileReader_test &&
 	./FileReader_test 
 if [ $? = 0 ]
 then
@@ -13,12 +13,13 @@ else
 	echo FileReader_test FAIL
 fi
 
-rm -f SpriteManager_test
-g++ -g -DUNIT_TESTING -I../src -I. ../src/FileReader.cpp ../src/Sprite.cpp SpriteManager_test.cpp -o SpriteManager_test &&
-	./SpriteManager_test 
+rm -f SpriteBuilder_test
+g++ -Wall -g -DUNIT_TESTING -I../src -I. ../src/FileReader.cpp ../src/Sprite.cpp ../src/SpriteBuilder.cpp SpriteBuilder_test.cpp -o SpriteBuilder_test &&
+	./SpriteBuilder_test 
 if [ $? = 0 ]
 then
-	echo SpriteManager_test OK
+	echo SpriteBuilder_test OK
 else
-	echo SpriteManager_test FAIL
+	echo SpriteBuilder_test FAIL
 fi
+
