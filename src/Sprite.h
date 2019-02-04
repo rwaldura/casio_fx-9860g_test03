@@ -53,12 +53,15 @@ class Sprite
 class SpriteManager
 {
 	public:
-		SpriteManager() {}
+		SpriteManager() : loaded_from_file(false) 
+		{
+		}
 
 		~SpriteManager()
 		{
-			for (int i = 0; i < MAX_SPRITES; i++)
-				delete sprites[i];
+			if (loaded_from_file)
+				for (int i = 0; i < MAX_SPRITES; i++)
+					delete sprites[i];
 		}
 
 		const Sprite* get(SpriteKind sk)
@@ -75,6 +78,7 @@ class SpriteManager
 	private:
 		static const int MAX_SPRITES = 32;
 		const Sprite* sprites[MAX_SPRITES];
+		bool loaded_from_file;
 };
 
 #endif

@@ -203,6 +203,8 @@ static const Sprite* read_sprite(FileReader* r)
  */
 int SpriteManager::load_file(const char* filename)
 {
+	loaded_from_file = true;
+
 	FileReader* r = new FileReader();
 	int err = r->open(filename);
 	if (err) return err;
