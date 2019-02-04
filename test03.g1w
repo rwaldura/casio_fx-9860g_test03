@@ -12,8 +12,10 @@ Debug=Debug\FXADDINror.dbg
 LoadAddress=80000000:90100000
 
 [Files]
-SourceFile=:test03.c
-SourceFile=:test03_main.cpp
-SourceFile=:Sprite.cpp
-HeaderFile=:Sprite.h
-HeaderFile=:Game.h
+SourceFile=:src\FileReader.cpp
+SourceFile=:src\test03_main.cpp
+SourceFile=:src\Sprite.cpp
+SourceFile=:src\test03.c
+HeaderFile=:src\FileReader.h
+HeaderFile=:src\Game.h
+HeaderFile=:src\Sprite.h

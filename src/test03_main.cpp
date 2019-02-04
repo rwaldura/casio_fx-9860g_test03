@@ -16,7 +16,7 @@ extern "C"
  * Heartbeat of this program. We compute changes, and refresh the display
  * accordingly, every REFRESH_FREQUENCY ms.
  */
-const int REFRESH_FREQUENCY = 100; // ms
+const int REFRESH_FREQUENCY = 200; // ms
 
 /*
  * The Casio fx-9860G has a simple LCD monochrome display.
@@ -36,12 +36,19 @@ enum Action
 
 void draw_background(const Sprite* pattern)
 {	
-	for (int x = 0; x < DISPLAY_WIDTH; x += pattern->width)
+	if (pattern->kind == NULL_SPRITE)
 	{
-		for (int y = 0; y < DISPLAY_HEIGHT; y += pattern->height)
+		Bdisp_AllClr_VRAM();
+	}
+	else
+	{
+		for (int x = 0; x < DISPLAY_WIDTH; x += pattern->width)
 		{
-			pattern->draw(x, y);
-		}
+			for (int y = 0; y < DISPLAY_HEIGHT; y += pattern->height)
+			{
+				pattern->draw(x, y);
+			}
+		}		
 	}
 }
 
@@ -88,7 +95,7 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 	sm->load_all();
 
 	// the background 
-	const Sprite* background_pattern = sm->get(MEDIUM_PATTERN);
+	const Sprite* background_pattern = sm->get(NULL_SPRITE);
 
 	// the paddle 
 	GameObject* paddle = new GameObject(16, 6, sm->get(MINI_PADDLE));

@@ -1,11 +1,13 @@
 /*
- * Read a file line by line, ignoring all '\n' characters.
+ * Read a file line by line: '\n' characters are end-of-line terminators.
  */
-
-#include <stdio.h>
 
 #ifndef FILE_READER_H
 #define FILE_READER_H
+
+#ifdef UNIT_TESTING
+	#include <stdio.h>
+#endif
 
 class FileReader
 {

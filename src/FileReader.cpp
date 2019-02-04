@@ -4,8 +4,12 @@
  
 #include <stdlib.h>
 #include <string.h>
-#include "fxlib.h"
 #include "FileReader.h"
+
+extern "C"
+{
+	#include "fxlib.h"
+}
 
 #ifdef UNIT_TESTING
 	#include <errno.h>
@@ -69,7 +73,7 @@ int FileReader::open(const char* file_name)
 	FONTCHARACTER* fc = strtoFONTCHARACTER(file_name);
 	file_handle = Bfile_OpenFile(fc, _OPENMODE_READ);
 	delete fc;
-	return (file_handle > 0) 0 /* no error */ : file_handle; 
+	return (file_handle > 0) ? 0 /* no error */ : file_handle; 
 #endif 
 }
 

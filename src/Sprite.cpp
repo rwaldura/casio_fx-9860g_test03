@@ -237,7 +237,7 @@ void SpriteManager::load_all()
 const Sprite* SpriteManager::next_pattern(const Sprite* pattern)		
 {
 	// ZEBRA_PATTERN is the last pattern
-	SpriteKind next_kind = (SpriteKind) (1 + (pattern->kind + 1) % ZEBRA_PATTERN);
+	SpriteKind next_kind = (SpriteKind) ((pattern->kind + 1) % ZEBRA_PATTERN);
 	return this->get(next_kind);
 }
 
