@@ -72,7 +72,7 @@ int FileReader::open(const char* file_name)
 #else
 	FONTCHARACTER* fc = strtoFONTCHARACTER(file_name);
 	file_handle = Bfile_OpenFile(fc, _OPENMODE_READ);
-	delete fc;
+	delete [] fc;
 	return (file_handle > 0) ? 0 /* no error */ : file_handle; 
 #endif 
 }
@@ -82,9 +82,9 @@ void FileReader::fill_buffer()
 	i = 0;
 	n =  
 #ifdef UNIT_TESTING
-	fread(buffer, sizeof(char), MAX_LINE, file_handle);
+		fread(buffer, sizeof(char), MAX_LINE, file_handle);
 #else
-	Bfile_ReadFile(file_handle, buffer, MAX_LINE, -1);
+		Bfile_ReadFile(file_handle, buffer, MAX_LINE, -1);
 #endif
 }
 

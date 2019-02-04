@@ -102,6 +102,8 @@ static const unsigned char mini_paddle_mask[] = {
  */
 void Sprite::draw(int x, int y) const
 {
+	if (this->kind == NULL_SPRITE) return;
+
 	DISPGRAPH dg = { x, y };
 	dg.GraphData.width = width;
 	dg.GraphData.height = height;

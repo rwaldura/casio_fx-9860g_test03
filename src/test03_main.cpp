@@ -92,18 +92,18 @@ static void log(const unsigned char* mesg)
 extern "C" int test03_main(int isAppli, unsigned short optionNum)
 {
 	// load all the sprites, we're going to need them
-	SpriteManager* sm = new SpriteManager();
-	sm->load_all();
+	SpriteManager sm;
+	sm.load_all();
 
 	// the background 
-	const Sprite* background_pattern = sm->get(NULL_SPRITE);
+	const Sprite* background_pattern = sm.get(NULL_SPRITE);
 
 	// the paddle 
-	GameObject* paddle = new GameObject(16, 6, sm->get(MINI_PADDLE));
+	GameObject* paddle = new GameObject(16, 6, sm.get(MINI_PADDLE));
 	paddle->move_to(22, DISPLAY_HEIGHT - paddle->height - 2);
 
 	// the ball 
-	GameObject* ball = new GameObject(6, 6, sm->get(MINI_BALL));
+	GameObject* ball = new GameObject(6, 6, sm.get(MINI_BALL));
 	ball->move_to(1, 1);
 	ball->delta_x = 4;
 	ball->delta_y = 2;
@@ -136,12 +136,12 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 
 			// cycle the background
 			case CHANGE_BACKGROUND:
-				background_pattern = sm->next_pattern(background_pattern);
+				background_pattern = sm.next_pattern(background_pattern);
 				break;
 
 			// rotate the ball
 			case CHANGE_BALL:
-				ball->sprite = sm->next_ball(ball->sprite);
+				ball->sprite = sm.next_ball(ball->sprite);
 				break;
 		}
 
@@ -191,9 +191,6 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 		// and wait
 		Sleep(REFRESH_FREQUENCY);		
     }
-
-	// clean up
-	delete sm;
 
     return 1; // NO_ERROR
 }

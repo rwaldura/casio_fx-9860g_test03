@@ -104,6 +104,6 @@ const Sprite* SpriteBuilder::build_sprite()
 	}
 
 	const Sprite* s = _build_sprite(id, width, height, bitmap_str);
-	delete bitmap_str;
+	delete [] bitmap_str;
 	return s;
 }
