@@ -1,6 +1,7 @@
 #include "Sprite.h"
 #include <iostream>
 #include <list>
+#include <stdlib.h>
 
 extern "C"
 {
@@ -20,17 +21,25 @@ void assertTrue(bool c, const char* mesg = "")
 	}
 }
 
-const char* TEST_FILE = "SpriteBuilder_test.txt";
+void test_parse_bitmap(const SpriteBuilder& sb)
+{
+	unsigned char* bytes = sb.parse_bitmap_string(8, 2, "........########");
+	assertTrue(bytes[0] == 0x00, "byte 0a");
+	assertTrue(bytes[1] == 0xFF, "byte 1a");
 
-int main(int argc, char* argv[])
+	bytes = sb.parse_bitmap_string(8, 2, "....########....");
+	assertTrue(bytes[0] == 0x0F, "byte 0b");
+	assertTrue(bytes[1] == 0xF0, "byte 1b");
+
+	bytes = sb.parse_bitmap_string(8, 2, "#.#.#.#..#.#.#.#");
+	assertTrue(bytes[0] == 0xAA, "byte 0c");
+	assertTrue(bytes[1] == 0x55, "byte 1c");
+}
+
+void test_build_sprites(const SpriteBuilder& sb)
 {
 	list<const Sprite*> sprites;
 
-	FileReader r;
-	int err = r.open(TEST_FILE);
-	assertTrue(err == 0, "opening test file");
-
-	SpriteBuilder sb = SpriteBuilder(r);
 	while (!sb.is_done())
 	{
 		const Sprite* s = sb.build_sprite();
@@ -75,7 +84,27 @@ int main(int argc, char* argv[])
 	assertTrue(s->mask[4] == 0xff, "mask0");
 	assertTrue(s->mask[5] == 0xff, "mask0");
 	assertTrue(s->mask[6] == 0xff, "mask0");
-	assertTrue(s->mask[7] == 0xff, "mask0");
+	assertTrue(s->mask[7] == 0xff, "mask0");	
+}
 
+const char* TEST_FILE = "SpriteBuilder_test.txt";
+
+void SpriteBuilder_test()
+{
+	FileReader r;
+	SpriteBuilder sb = SpriteBuilder(r);
+
+	test_parse_bitmap(sb);
+
+	int err = r.open(TEST_FILE);
+	assertTrue(err == 0, "opening test file");
+	
+	test_build_sprites(sb);
+}
+
+int main(int argc, char* argv[])
+{
+	SpriteBuilder_test();
 	return 0;
 }
+

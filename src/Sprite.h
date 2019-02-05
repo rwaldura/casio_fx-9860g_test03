@@ -91,18 +91,21 @@ class SpriteBuilder
 		SpriteBuilder(FileReader& r) : reader(r) 
 		{}
 
-		const Sprite* build_sprite();
+		const Sprite* build_sprite() const;
 
-		bool is_done()
+		bool is_done() const
 		{
 			return reader.at_end();
 		}
 
-		unsigned char* parse_bitmap_string(int width, int height, const char* s);
-		const Sprite* _build_sprite(int id, int width, int height, const char* bitmap_str);
-
 	private:
 		FileReader& reader;
-};
+
+		unsigned char* parse_bitmap_string(int width, int height, const char* s) const;
+		const Sprite* _build_sprite(int id, int width, int height, const char* bitmap_str) const;
+
+		// unit test defined in SpriteBuilder_test.cpp
+		friend void test_parse_bitmap(const SpriteBuilder& sb);
+	};
 
 #endif

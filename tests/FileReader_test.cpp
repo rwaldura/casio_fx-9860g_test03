@@ -23,18 +23,21 @@ void assertEqual(const char* s1, const char* s2, const char* mesg = "")
 	assertTrue(s1 != 0 && s2 != 0 && strcmp(s1, s2) == 0);
 }
 
+void FileReader_test()
+{
+	FileReader r;
+	r.open("FileReader_test.txt");
+
+	assertEqual("abc_def_ghi_jkl", r.read_line());
+	assertEqual("", r.read_line());
+	assertEqual("###_***_xyz", r.read_line());
+	assertTrue(0 == r.read_line(), "0 line");
+	assertTrue(0 == r.read_line(), "0 line again");
+	assertTrue(r.at_end(), "at end");
+}
+
 int main(int argc, char* argv[])
 {
-	FileReader* r = new FileReader();
-	r->open("FileReader_test.txt");
-
-	assertEqual("abc_def_ghi_jkl", r->read_line());
-	assertEqual("", r->read_line());
-	assertEqual("###_***_xyz", r->read_line());
-	assertTrue(0 == r->read_line(), "0 line");
-	assertTrue(0 == r->read_line(), "0 line again");
-	assertTrue(r->at_end(), "at end");
-	
-	delete r;
+	FileReader_test();
 	return 0;
 }

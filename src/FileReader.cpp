@@ -77,7 +77,7 @@ int FileReader::open(const char* file_name)
 #endif 
 }
 
-void FileReader::fill_buffer()
+inline void FileReader::fill_buffer()
 {
 	i = 0;
 	n =  
@@ -120,7 +120,7 @@ char* FileReader::read_line()
 	return line;
 }
 
-bool FileReader::at_end()
+inline bool FileReader::at_end()
 {
 	return n == 0;
 }

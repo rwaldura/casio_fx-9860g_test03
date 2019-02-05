@@ -15,7 +15,7 @@ static const int BPC = 8; // bits per char
 /*
  * Turn the string "#..##" into the bits 10011.
  */
-unsigned char* SpriteBuilder::parse_bitmap_string(int width, int height, const char* s)
+unsigned char* SpriteBuilder::parse_bitmap_string(int width, int height, const char* s) const
 {
 	unsigned char* bitmap = new unsigned char[width * height / BPC](); // zero-initialized array
 
@@ -34,7 +34,7 @@ unsigned char* SpriteBuilder::parse_bitmap_string(int width, int height, const c
 /*
  * Instantiate a new sprite. 
  */
-const Sprite* SpriteBuilder::_build_sprite(int id, int width, int height, const char* bitmap_str)
+const Sprite* SpriteBuilder::_build_sprite(int id, int width, int height, const char* bitmap_str) const
 {
 	const Sprite* s;
 
@@ -65,7 +65,7 @@ const Sprite* SpriteBuilder::_build_sprite(int id, int width, int height, const 
 /*
  * Read one sprite definition from the reader, and return the sprite instance. 
  */
-const Sprite* SpriteBuilder::build_sprite()
+const Sprite* SpriteBuilder::build_sprite() const
 {
 	int id = 0;
 	int width = 0, height = 0;

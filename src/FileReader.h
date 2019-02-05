@@ -11,7 +11,7 @@
 
 class FileReader
 {
-	public:
+public:
 		FileReader();
 		~FileReader();
 		int open(const char* file_name); // returns 0 on success
