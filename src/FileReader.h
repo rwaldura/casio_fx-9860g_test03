@@ -12,7 +12,9 @@
 class FileReader
 {
 public:
-		FileReader();
+		static const int MAX_LINE = 64;
+
+		FileReader(int max = MAX_LINE);
 		~FileReader();
 		int open(const char* file_name); // returns 0 on success
 		void close();
@@ -22,8 +24,7 @@ public:
 	private:
 		void fill_buffer();
 
-		static const int MAX_LINE = 64;
-		char buffer[MAX_LINE];
+		char* buffer;
 		int i; // index into buffer
 		int n; // current buffer size
 

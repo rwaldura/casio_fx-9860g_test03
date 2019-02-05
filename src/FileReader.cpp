@@ -16,8 +16,9 @@ extern "C"
 	#include <stdio.h>
 #endif 
 
-FileReader::FileReader()
+FileReader::FileReader(int max)
 {
+	buffer = new char[max];
 	file_handle = 0;
 	i = -1; // index into buffer
 	n = -1; // current buffer size
@@ -26,6 +27,8 @@ FileReader::FileReader()
 FileReader::~FileReader()
 {
 	close();
+	delete [] buffer;
+	buffer = 0;
 }
 
 void FileReader::close()

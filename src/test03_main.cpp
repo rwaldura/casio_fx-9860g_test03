@@ -83,7 +83,7 @@ static void log(const unsigned char* mesg)
 	static int line = 0;
 	PrintMini(0, line, mesg, MINI_OVER);
 	line += 6;
-	unsigned int key; GetKey(&key);
+	unsigned int key; GetKey(&key); // blocks until key pressed
 }
 
 /*
