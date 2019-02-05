@@ -17,7 +17,7 @@ extern "C"
  * Heartbeat of this program. We compute changes, and refresh the display
  * accordingly, every REFRESH_FREQUENCY ms.
  */
-const int REFRESH_FREQUENCY = 200; // ms
+const int REFRESH_FREQUENCY = 100; // ms
 
 /*
  * The Casio fx-9860G has a simple LCD monochrome display.
@@ -127,11 +127,11 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 				break;
 
 			case MOVE_LEFT:
-				paddle->x -= 5;
+				paddle->x -= 10;
 				break;
 
 			case MOVE_RIGHT:
-				paddle->x += 5;
+				paddle->x += 10;
 				break;
 
 			// cycle the background

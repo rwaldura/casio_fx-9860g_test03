@@ -2,7 +2,7 @@
 
 [_1]
 Type=5
-Order=2
+Order=1
 Top=15
 Left=2235
 Height=4740
@@ -37,12 +37,12 @@ OptionA=0
 
 [_4]
 Type=7
-Order=7
+Order=10
 Top=4740
 Left=2220
 Height=3165
 Width=5565
-State=0
+State=16
 Flags=00000000
 OptionA=0
 
@@ -59,7 +59,7 @@ OptionA=0
 
 [_6]
 Type=3
-Order=10
+Order=12
 Top=0
 Left=10788
 Height=6348
@@ -70,7 +70,7 @@ OptionA=0
 
 [_7]
 Type=2
-Order=9
+Order=11
 Top=6348
 Left=7800
 Height=3588
@@ -81,7 +81,7 @@ OptionA=0
 
 [_8]
 Type=17
-Order=1
+Order=3
 Top=15
 Left=-15
 Height=11115
@@ -103,14 +103,14 @@ OptionA=0
 
 [_32]
 Type=16
-Order=3
+Order=7
 Top=240
 Left=6975
 Height=11535
 Width=13740
 State=16
 Flags=00000020
-Setting=39:3:src\Sprite.h
+Setting=104:2:src\Sprite.cpp
 OptionA=0
 
 [_33]
@@ -122,5 +122,29 @@ Height=8205
 Width=17910
 State=16
 Flags=00000020
-Setting=1:1:src\test03.c
+Setting=19:21:src\FileReader.h
+OptionA=0
+
+[_34]
+Type=16
+Order=2
+Top=2040
+Left=1170
+Height=8205
+Width=17910
+State=0
+Flags=00000020
+Setting=134:20:SRC\test03_main.cpp
+OptionA=0
+
+[_35]
+Type=16
+Order=9
+Top=1905
+Left=945
+Height=8205
+Width=17910
+State=16
+Flags=00000020
+Setting=101:1:src\FileReader.cpp
 OptionA=0

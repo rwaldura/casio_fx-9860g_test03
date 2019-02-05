@@ -120,7 +120,7 @@ char* FileReader::read_line()
 	return line;
 }
 
-inline bool FileReader::at_end()
+bool FileReader::at_end()
 {
 	return n == 0;
 }

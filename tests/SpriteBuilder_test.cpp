@@ -46,7 +46,8 @@ void test_build_sprites(const SpriteBuilder& sb)
 		sprites.push_back(s);	
 	}
 	
-	const Sprite* s = sprites.front(); sprites.pop_front();
+	const Sprite* s;
+	s = sprites.front(); sprites.pop_front();
 	assertTrue(s != 0, "null");
 	assertTrue(s->kind == BLACK_PATTERN, "id");
 	assertTrue(s->width == 8, "width");
@@ -87,16 +88,14 @@ void test_build_sprites(const SpriteBuilder& sb)
 	assertTrue(s->mask[7] == 0xff, "mask0");	
 }
 
-const char* TEST_FILE = "SpriteBuilder_test.txt";
-
-void SpriteBuilder_test()
+void SpriteBuilder_test(const char* filename)
 {
 	FileReader r;
 	SpriteBuilder sb = SpriteBuilder(r);
 
 	test_parse_bitmap(sb);
 
-	int err = r.open(TEST_FILE);
+	int err = r.open(filename);
 	assertTrue(err == 0, "opening test file");
 	
 	test_build_sprites(sb);
@@ -104,7 +103,7 @@ void SpriteBuilder_test()
 
 int main(int argc, char* argv[])
 {
-	SpriteBuilder_test();
+	SpriteBuilder_test("SpriteBuilder_test.txt");
 	return 0;
 }
 
