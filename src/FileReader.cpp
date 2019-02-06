@@ -2,8 +2,8 @@
  * Implementation of class FileReader.
  */
  
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 #include "FileReader.h"
 
 extern "C"

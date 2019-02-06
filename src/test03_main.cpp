@@ -3,7 +3,7 @@
  * by Ren Waldura, January 2019
  */
 
-#include <cstdlib>
+#include <stdlib.h>
 
 #include "Sprite.h"
 #include "Game.h"

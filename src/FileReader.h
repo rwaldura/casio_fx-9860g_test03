@@ -5,7 +5,7 @@
 #ifndef FILE_READER_H
 #define FILE_READER_H
 
-#include <cstdlib>
+#include <stddef.h>
 
 #ifdef UNIT_TESTING
 	#include <cstdio>
