@@ -2,8 +2,8 @@
  * 
  */
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 
 #include "FileReader.h"
 #include "Sprite.h"
@@ -15,9 +15,9 @@ static const int BPC = 8; // bits per char
 /*
  * Turn the string "#..##" into the bits 10011.
  */
-unsigned char* SpriteBuilder::parse_bitmap_string(int width, int height, const char* s) const
+byte_t* SpriteBuilder::parse_bitmap_string(int width, int height, const char* s) const
 {
-	unsigned char* bitmap = new unsigned char[width * height / BPC](); // zero-initialized array
+	byte_t* bitmap = new byte_t[width * height / BPC](); // zero-initialized array
 
 	for (int i = 0; i < width * height; i++)
 	{
@@ -38,19 +38,19 @@ const Sprite* SpriteBuilder::_build_sprite(int id, int width, int height, const 
 {
 	const Sprite* s;
 
-	if (strlen(bitmap_str) == width * height)
+	if (strlen(bitmap_str) == (size_t) width * height)
 	{
 		// parse the bitmap definition into actual bits
-	  	unsigned char* bitmap = parse_bitmap_string(width, height, bitmap_str);
+	  	byte_t* bitmap = parse_bitmap_string(width, height, bitmap_str);
 		s = new Sprite((SpriteKind) id, width, height, bitmap);	
 	}
-	else if (strlen(bitmap_str) == 2 * width * height)
+	else if (strlen(bitmap_str) == (size_t) 2 * width * height)
 	{
 		height /= 2;
 
 		// parse the bitmap definition into actual bits
-	  	unsigned char* bmap = parse_bitmap_string(width, height, bitmap_str);	
-		unsigned char* mask = parse_bitmap_string(width, height, bitmap_str + width * height);
+	  	byte_t* bmap = parse_bitmap_string(width, height, bitmap_str);	
+		byte_t* mask = parse_bitmap_string(width, height, bitmap_str + width * height);
 
 		s = new Sprite((SpriteKind) id, width, height, bmap, mask);		
 	}

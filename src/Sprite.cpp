@@ -15,50 +15,50 @@ extern "C"
 	#include "fxlib.h"
 }
 
-static const unsigned char light_pattern_bmap[] = {
+static const byte_t light_pattern_bmap[] = {
     0x00, 0x22, 0x44, 0x00, 0x00, 0x22, 0x44, 0x00
 };
 
-static const unsigned char medium_pattern_bmap[] = {
+static const byte_t medium_pattern_bmap[] = {
 	0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 
 };
 
-static const unsigned char dark_pattern_bmap[] = {
+static const byte_t dark_pattern_bmap[] = {
 	0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55 
 };
 
-static const unsigned char zebra_pattern_bmap[] = {
+static const byte_t zebra_pattern_bmap[] = {
     0x38, 0x71, 0xe3, 0xc7, 0x8e, 0x1c, 0x38, 0x70
 };
 
-static const unsigned char black_pattern_bmap[] = {
+static const byte_t black_pattern_bmap[] = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
 
-static const unsigned char black_ball_sprite_mask[] = {
+static const byte_t black_ball_sprite_mask[] = {
 	0xe7, 0x81, 0x81, 0x00, 0x00, 0x81, 0x81, 0xe7
 };
-static const unsigned char black_ball_sprite_bmap[] = {
+static const byte_t black_ball_sprite_bmap[] = {
 	0x00, 0x18, 0x3c, 0x76, 0x7e, 0x3c, 0x18, 0x00
 };
 
-static const unsigned char white_ball_sprite_mask[] = {
+static const byte_t white_ball_sprite_mask[] = {
     0xe7, 0xc3, 0x81, 0x00, 0x00, 0x81, 0xc3, 0xe7
 };
-static const unsigned char white_ball_sprite_bmap[] = {
+static const byte_t white_ball_sprite_bmap[] = {
     0x00, 0x18, 0x24, 0x42, 0x42, 0x24, 0x18, 0x00
 };
 
-static const unsigned char mini_ball_sprite_bmap[] = {
+static const byte_t mini_ball_sprite_bmap[] = {
     0x00, 0x00, 0x08, 0x14, 0x08, 0x00, 0x00, 0x00
 };
 
-static const unsigned char mini_ball_sprite_mask[] = {
+static const byte_t mini_ball_sprite_mask[] = {
     0xff, 0xe3, 0xc1, 0xc1, 0xc1, 0xe3, 0xff, 0xff
 };
 
 /* sprites/paddle-mini.bmp bitmap 16x16 */
-static const unsigned char mini_paddle_bitmap[] = {
+static const byte_t mini_paddle_bitmap[] = {
 	0x00, 0x00, 
 	0x00, 0x00, 
 	0x00, 0x00, 
@@ -77,7 +77,7 @@ static const unsigned char mini_paddle_bitmap[] = {
 	0x00, 0x00
 };
 /* sprites/paddle-mini.bmp mask 16x16 */
-static const unsigned char mini_paddle_mask[] = {
+static const byte_t mini_paddle_mask[] = {
 	0xff, 0xff, 
 	0xff, 0xff, 
 	0xff, 0xff, 

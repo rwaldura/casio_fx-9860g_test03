@@ -5,16 +5,18 @@
 #ifndef FILE_READER_H
 #define FILE_READER_H
 
+#include <cstdlib>
+
 #ifdef UNIT_TESTING
-	#include <stdio.h>
+	#include <cstdio>
 #endif
 
 class FileReader
 {
 public:
-		static const int MAX_LINE = 64;
+		static const size_t MAX_LINE = 64;
 
-		FileReader(int max = MAX_LINE);
+		FileReader(size_t max = MAX_LINE);
 		~FileReader();
 		int open(const char* file_name); // returns 0 on success
 		void close();

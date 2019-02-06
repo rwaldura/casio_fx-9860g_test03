@@ -2,8 +2,8 @@
  * Implementation of class FileReader.
  */
  
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include "FileReader.h"
 
 extern "C"
@@ -12,11 +12,11 @@ extern "C"
 }
 
 #ifdef UNIT_TESTING
-	#include <errno.h>
-	#include <stdio.h>
+	#include <cerrno>
+	#include <cstdio>
 #endif 
 
-FileReader::FileReader(int max)
+FileReader::FileReader(size_t max)
 {
 	buffer = new char[max];
 	file_handle = 0;
@@ -55,7 +55,7 @@ inline FONTCHARACTER* strtoFONTCHARACTER(const char* s)
 	FONTCHARACTER* f = new FONTCHARACTER[1 + strlen(s)];
 
 	// also copy the terminating '\0'
-	for (int j = 0; j < 1 + strlen(s); j++)
+	for (size_t j = 0; j < 1 + strlen(s); j++)
 	{
 		f[j] = s[j];
 	}

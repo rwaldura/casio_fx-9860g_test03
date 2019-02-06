@@ -3,7 +3,7 @@
  * by Ren Waldura, January 2019
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "Sprite.h"
 #include "Game.h"
@@ -17,15 +17,15 @@ extern "C"
  * Heartbeat of this program. We compute changes, and refresh the display
  * accordingly, every REFRESH_FREQUENCY ms.
  */
-const int REFRESH_FREQUENCY = 100; // ms
+static const int REFRESH_FREQUENCY = 100; // ms
 
 /*
  * The Casio fx-9860G has a simple LCD monochrome display.
  * Each pixel is one bit, where 0 = off = white
  * And bit 1 = on = black.
  */
-const int DISPLAY_WIDTH = IM_VRAM_WIDTH; 
-const int DISPLAY_HEIGHT = IM_VRAM_HEIGHT; // pixels i.e. bits
+static const int DISPLAY_WIDTH = IM_VRAM_WIDTH; 
+static const int DISPLAY_HEIGHT = IM_VRAM_HEIGHT; // pixels i.e. bits
 
 enum Action
 {
@@ -195,3 +195,15 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
     return 1; // NO_ERROR
 }
 
+/*
+ * use GetKey()
+ * SetQuitHandler() to remove the timer
+ * int SetTimer(
+int ID, // timer identifier
+int elapse, // time-out value
+void (*hander)(void) // address of timer procedure
+);
+int KillTimer(
+int ID
+);
+ */

@@ -2,7 +2,7 @@
 /*                                                               */
 /*   CASIO fx-9860G SDK Library                                  */
 /*                                                               */
-/*   File name : [ProjectName].c                                 */
+/*   File name : test03.c                                        */
 /*                                                               */
 /*   Copyright (c) 2006 CASIO COMPUTER CO., LTD.                 */
 /*                                                               */

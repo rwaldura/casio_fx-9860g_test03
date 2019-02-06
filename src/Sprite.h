@@ -9,6 +9,8 @@
 
 #include "FileReader.h"
 
+typedef unsigned char byte_t;
+
 enum SpriteKind
 {
 	NULL_SPRITE,
@@ -32,10 +34,10 @@ class Sprite
 
 		// these are made public for unit-testing purposes
 		// they should be private otherwise
-		const unsigned char *const bitmap;	
-		const unsigned char *const mask;
+		const byte_t *const bitmap;	
+		const byte_t *const mask;
 
-		Sprite(SpriteKind k, int w, int h, const unsigned char *bm, const unsigned char *m = 0)
+		Sprite(SpriteKind k, int w, int h, const byte_t *bm, const byte_t *m = 0)
 			: kind(k), width(w), height(h), bitmap(bm), mask(m)
 		{}
 
@@ -101,7 +103,7 @@ class SpriteBuilder
 	private:
 		FileReader& reader;
 
-		unsigned char* parse_bitmap_string(int width, int height, const char* s) const;
+		byte_t* parse_bitmap_string(int width, int height, const char* s) const;
 		const Sprite* _build_sprite(int id, int width, int height, const char* bitmap_str) const;
 
 		// unit test defined in SpriteBuilder_test.cpp
