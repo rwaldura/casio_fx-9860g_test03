@@ -19,14 +19,16 @@ extern "C"
 
 /*
  * Heartbeat of this program. We compute changes, and refresh the display
- * accordingly, every REFRESH_FREQUENCY ms.
+ * accordingly, every REFRESH_FREQ ms.
  */
-static const int REFRESH_FREQUENCY = 500; // ms
+static const int REFRESH_FREQ = 100; // ms
 
 Game* game = 0;
 
-void end_game(void)
+void finish(void)
 {
+	Bkey_Set_RepeatTime_Default();
+
 	KillTimer(ID_USER_TIMER1);
 
 	if (game)
@@ -37,7 +39,10 @@ void end_game(void)
 	}
 }
 
-void update_game(void)
+/*
+ * Update the game and refresh the display.
+ */
+void refresh(void)
 {
 	if (game)
 	{
@@ -51,8 +56,11 @@ void update_game(void)
  */
 extern "C" int test03_main(int isAppli, unsigned short optionNum)
 {
-	SetQuitHandler(end_game);
-	SetTimer(ID_USER_TIMER1, REFRESH_FREQUENCY, update_game);
+	SetQuitHandler(finish);
+
+	Bkey_Set_RepeatTime(REFRESH_FREQ / 25, REFRESH_FREQ / 25);
+
+	SetTimer(ID_USER_TIMER1, REFRESH_FREQ, refresh);
 
 	game = new Game(IM_VRAM_WIDTH, IM_VRAM_HEIGHT);
 	game->start();
@@ -67,10 +75,10 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 		GetKey(&key);
 		
 		quit = game->handle_event(key);
-		game->update();
+		// game->update();
     }	             
 
-	end_game();
+	finish();
 
     return 1; // NO_ERROR
 }
