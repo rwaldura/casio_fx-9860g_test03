@@ -33,7 +33,7 @@ class Sprite
 		const unsigned int height;
 
 		// these are made public for unit-testing purposes
-		// they should be private otherwise
+		// they should be kept private otherwise
 		const byte_t *const bitmap;	
 		const byte_t *const mask;
 

@@ -2,14 +2,14 @@
 
 [_1]
 Type=5
-Order=3
+Order=1
 Top=15
 Left=2235
 Height=4740
 Width=5565
-State=16
+State=0
 Flags=00000020
-Setting=92:57:SRC\test03_main.cpp
+Setting=77:1:SRC\test03_main.cpp
 OptionA=0
 
 [_2]
@@ -26,7 +26,7 @@ OptionB=15
 
 [_3]
 Type=6
-Order=2
+Order=3
 Top=3705
 Left=16050
 Height=6390
@@ -127,14 +127,14 @@ OptionA=0
 
 [_34]
 Type=16
-Order=1
+Order=2
 Top=2040
 Left=1170
 Height=8205
 Width=17910
-State=16
+State=0
 Flags=00000020
-Setting=134:20:SRC\test03_main.cpp
+Setting=62:12:SRC\test03_main.cpp
 OptionA=0
 
 [_35]

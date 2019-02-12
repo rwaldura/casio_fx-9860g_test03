@@ -9,8 +9,8 @@
 class GameObject
 {
 public:
-	const Sprite* sprite;	
 	const int width, height;
+	const Sprite* sprite;	
 	int x, y; // location in the game area
 	int delta_x, delta_y;
 
@@ -36,14 +36,42 @@ public:
 		y = yy;
 	}
 
-	bool intersects(const GameObject* o) const
+	bool intersects(const GameObject& o) const
 	{
-		if (   x +    width  < o->x 
-		 || o->x + o->width  <    x 
-		 ||    y +    height < o->y 
-		 || o->y + o->height <    y)
+		if (  x +   width  < o.x 
+		 || o.x + o.width  <   x 
+		 ||   y +   height < o.y 
+		 || o.y + o.height <   y)
 			return false;
 		else
 		    return true;
 	}
 };
+
+class Game
+{
+public:
+	Game(int dw, int dh) : display_width(dw), display_height(dh) 
+	{
+	}
+
+	void start();
+	bool handle_event(unsigned int key);
+	void update();
+	void end();
+
+	~Game()
+	{
+		end();
+	}
+
+private:
+	void draw_background(const Sprite* pattern);
+
+	const int display_width, display_height;
+	SpriteManager* sm;
+	const Sprite* background_pattern;
+	GameObject* paddle;
+	GameObject* ball;	
+};
+
