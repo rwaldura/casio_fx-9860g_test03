@@ -18,7 +18,7 @@ void Game::start()
 
 	// the paddle 
 	paddle = new GameObject(16, 6, sm->get(MINI_PADDLE));
-	paddle->move_to(22, display_height - paddle->height - 2);
+	paddle->move_to(22, max_height - paddle->height - 2);
 
 	// the ball 
 	ball = new GameObject(6, 6, sm->get(MINI_BALL));
@@ -56,9 +56,9 @@ void Game::draw_background(const Sprite* pattern)
 	}
 	else
 	{
-		for (int y = 0; y < display_height; y += pattern->height)
+		for (int y = 0; y < max_height; y += pattern->height)
 		{
-			for (int x = 0; x < display_width; x += pattern->width)
+			for (int x = 0; x < max_width; x += pattern->width)
 			{
 				pattern->draw(x, y);
 			}
@@ -121,7 +121,7 @@ void Game::update()
 
 	// CONSTRAINT: paddle must stay in play area
 	if (paddle->x <= 1) paddle->x = 1;
-	if (paddle->x >= display_width - paddle->width) paddle->x = display_width - paddle->width;
+	if (paddle->x >= max_width - paddle->width) paddle->x = max_width - paddle->width;
 
 	// CONSTRAINT: ball bounces off the edges of the screen
 	// if ball goes in a straight line, randomize its bouncing
@@ -130,7 +130,7 @@ void Game::update()
 		ball->delta_x = +3;
 		if (ball->delta_y == 0 && rand() % 3 == 0) ball->delta_y = +1;
 	} 
-	else if (ball->x >= display_width - ball->width) 
+	else if (ball->x >= max_width - ball->width) 
 	{
 		ball->delta_x = -3;			
 		if (ball->delta_y == 0 && rand() % 3 == 0) ball->delta_y = +1;
@@ -141,7 +141,7 @@ void Game::update()
 		if (ball->delta_x == 0 && rand() % 3 == 0) ball->delta_x = +1;
 		ball->delta_y = +1;
 	}
-	else if (ball->y >= display_height - ball->height) 
+	else if (ball->y >= max_height - ball->height) 
 	{
 		if (ball->delta_x == 0 && rand() % 3 == 0) ball->delta_x = +1;
 		ball->delta_y = -1;			

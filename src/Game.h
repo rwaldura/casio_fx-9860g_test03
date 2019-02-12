@@ -51,7 +51,7 @@ public:
 class Game
 {
 public:
-	Game(int dw, int dh) : display_width(dw), display_height(dh) 
+	Game(int dw, int dh) : max_width(dw), max_height(dh) 
 	{
 	}
 
@@ -68,7 +68,7 @@ public:
 private:
 	void draw_background(const Sprite* pattern);
 
-	const int display_width, display_height;
+	const int max_width, max_height;
 	SpriteManager* sm;
 	const Sprite* background_pattern;
 	GameObject* paddle;

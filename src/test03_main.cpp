@@ -46,7 +46,9 @@ void refresh(void)
 {
 	if (game)
 	{
-		game->update();		
+		game->update();	
+
+		// refresh the display from the VRAM
 		Bdisp_PutDisp_DD();	
 	}
 }
@@ -56,17 +58,21 @@ void refresh(void)
  */
 extern "C" int test03_main(int isAppli, unsigned short optionNum)
 {
-	SetQuitHandler(finish);
+	game = new Game(IM_VRAM_WIDTH, IM_VRAM_HEIGHT);
+	// load all sprites etc.
+	game->start();
 
 	Bkey_Set_RepeatTime(REFRESH_FREQ / 25, REFRESH_FREQ / 25);
-
 	SetTimer(ID_USER_TIMER1, REFRESH_FREQ, refresh);
+	SetQuitHandler(finish);
 
-	game = new Game(IM_VRAM_WIDTH, IM_VRAM_HEIGHT);
-	game->start();
-             
-	bool quit = false;
-	while (!quit)
+	/*
+ 	 * This is apparently the proper way to write an add-in: they
+	 * are not expected to return, ever. GetKey() should be called
+	 * regularly to let the OS handle things, particularly the
+	 * MENU key, used to exit add-ins. 
+ 	 */
+	for ( ; /* ever */ ; )
     {
 		// GetKey() blocks waiting for a keypress
 		// also refreshes the display
@@ -74,11 +80,9 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 		unsigned int key;
 		GetKey(&key);
 		
-		quit = game->handle_event(key);
+		game->handle_event(key);
 		// game->update();
     }	             
 
-	finish();
-
-    return 1; // NO_ERROR
+    return 1; // NOTREACHED
 }
