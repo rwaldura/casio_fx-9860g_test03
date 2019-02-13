@@ -112,18 +112,18 @@ void Sprite::draw(int x, int y) const
 	if (mask)
 	{
 		// mask first to clear the area
-		dg.GraphData.pBitmap = (unsigned char*) mask;
+		dg.GraphData.pBitmap = (byte_t*) mask; // cast to drop const
 		dg.WriteKind = IMB_WRITEKIND_AND;
 		Bdisp_WriteGraph_VRAM(&dg);		
 
 		// the actual sprite
-		dg.GraphData.pBitmap = (unsigned char*) bitmap;
+		dg.GraphData.pBitmap = (byte_t*) bitmap; // cast to drop const
 		dg.WriteKind = IMB_WRITEKIND_OR;
 		Bdisp_WriteGraph_VRAM(&dg);
 	}
 	else // no mask: merely fill
 	{
-		dg.GraphData.pBitmap = (unsigned char*) bitmap;
+		dg.GraphData.pBitmap = (byte_t*) bitmap; // cast to drop const
 		dg.WriteKind = IMB_WRITEKIND_OVER;
 		Bdisp_WriteGraph_VRAM(&dg);		
 	}

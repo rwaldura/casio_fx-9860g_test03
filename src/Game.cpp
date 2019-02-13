@@ -110,6 +110,9 @@ static void log(const unsigned char* mesg)
 	line += 6;
 }
 
+/*
+ * Compute game changes, and update the VRAM.
+ */
 void Game::update()
 {
 	// CONSTRAINT: ball bounces off paddle

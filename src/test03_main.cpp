@@ -67,10 +67,12 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 	SetQuitHandler(finish);
 
 	/*
- 	 * This is apparently the proper way to write an add-in: they
-	 * are not expected to return, ever. GetKey() should be called
-	 * regularly to let the OS handle things, particularly the
-	 * MENU key, used to exit add-ins. 
+ 	 * This is apparently the proper way to write a Casio add-in: they
+	 * are not meant to return, ever.
+	 * Instead, GetKey() should be called regularly to let the OS handle
+	 * things, particularly the MENU key, used to exit add-ins. 
+	 * An add-in that exits -- returns from main() -- cannot be resumed from
+	 * the main menu.
  	 */
 	for ( ; /* ever */ ; )
     {
@@ -81,7 +83,9 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 		GetKey(&key);
 		
 		game->handle_event(key);
+
 		// game->update();
+		// this is done by our timer
     }	             
 
     return 1; // NOTREACHED

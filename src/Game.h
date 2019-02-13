@@ -4,6 +4,9 @@
  * This lets us accommodate drop shadows etc. around the object itself.
  */
 
+#ifndef GAME_H
+#define GAME_H
+
 #include "Sprite.h"
 
 class GameObject
@@ -75,3 +78,4 @@ private:
 	GameObject* ball;	
 };
 
+#endif
