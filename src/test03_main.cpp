@@ -77,7 +77,7 @@ extern "C" int test03_main(int isAppli, unsigned short optionNum)
 	for ( ; /* ever */ ; )
     {
 		// GetKey() blocks waiting for a keypress
-		// also refreshes the display
+		// also refreshes the display, same as Bdisp_PutDisp_DD()
 		// also handles MENU key and contrast setting
 		unsigned int key;
 		GetKey(&key);

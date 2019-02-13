@@ -9,6 +9,10 @@
 /*****************************************************************/
 
 
+extern int test03_main(int isAppli, unsigned short OptionNum);
+// defined in test03_main.cpp
+
+
 //****************************************************************************
 //  AddIn_main (Sample program main function)
 //
