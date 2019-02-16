@@ -10,6 +10,7 @@
  */
 
 #include "Game.h"
+#include "GetAppName.h"
 
 extern "C"
 {
@@ -40,17 +41,34 @@ void finish(void)
 }
 
 /*
+ * Hack
+ */
+bool isMainMenuRunning()
+{
+	return true;
+}
+
+/*
  * Update the game and refresh the display.
+ * 
+ * Timers are not suspended when the main menu gets called from GetKey().
+ * However, we prevent overtaking the display when we know we're not in
+ * the "foreground".
  */
 void refresh(void)
 {
-	if (game)
+	if (game && !isMainMenuRunning())
 	{
 		game->update();	
 
 		// refresh the display from the VRAM
 		Bdisp_PutDisp_DD();	
 	}
+
+	unsigned char appName[11];
+	GetAppName(appName);
+	appName[10] = '\0';
+	PrintMini(1, 1, appName, MINI_OVER);
 }
 
 /*

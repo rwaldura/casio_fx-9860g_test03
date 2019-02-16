@@ -1,7 +1,6 @@
 /*
- * An object in the game: the ball, the paddle, the bricks.
- * The size of an object can differ from the size of its sprite! 
- * This lets us accommodate drop shadows etc. around the object itself.
+ * Game logic and objects.
+ *
  */
 
 #ifndef GAME_H
@@ -9,6 +8,11 @@
 
 #include "Sprite.h"
 
+/*
+ * An object in the game: the ball, the paddle, the bricks.
+ * The size of an object can differ from the size of its sprite! 
+ * This lets us accommodate drop shadows etc. around the object itself.
+ */
 class GameObject
 {
 public:

@@ -50,7 +50,7 @@ void FileReader::close()
  * The returned value is freshly allocated, and should therefore 
  * be disposed of properly, i.e. deleted.
  */
-inline FONTCHARACTER* strtoFONTCHARACTER(const char* s)
+static FONTCHARACTER* strtoFONTCHARACTER(const char* s)
 {
 	FONTCHARACTER* f = new FONTCHARACTER[1 + strlen(s)];
 

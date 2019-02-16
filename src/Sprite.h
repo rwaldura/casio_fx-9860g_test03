@@ -1,7 +1,10 @@
 /*
- * All sprite-related classes: Sprite and SpriteManager.
+ * All sprite-related classes: Sprite et al.
  * A sprite is a bitmap, with an optional mask. It knows how to draw itself to the VRAM.
+ *
  * The sprite manager loads sprites into main memory.
+ *
+ * The sprite builder reads sprite definitions from files, and instantiates them.
  */
 
 #ifndef SPRITE_H
@@ -85,7 +88,7 @@ class SpriteManager
 };
 
 /*
- * Reads the sprites from file, and instantiate them.
+ * Read sprites from file, and instantiate them.
  */
 class SpriteBuilder
 {
