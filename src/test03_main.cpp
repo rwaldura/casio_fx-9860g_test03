@@ -9,9 +9,9 @@
  * January 2019
  */
 
-#include "Game.h"
-#include "GetAppName.h"
 #include <string.h>
+#include "syscalls.h"
+#include "Game.h"
 
 extern "C"
 {
@@ -41,10 +41,21 @@ void finish(void)
 	}
 }
 
+static void print_app_name()
+{
+	char appName[13];
+	appName[0] = '>';
+	GetAppName(appName + 1);
+	size_t n = strlen(appName);
+	appName[n] = '<';
+	appName[n + 1] = '\0';
+	PrintMini(1, 1, (unsigned char*) appName, MINI_OVER);	
+}
+
 /*
  * Hack
  */
-bool isMainMenuRunning()
+bool is_main_menu()
 {
 	return false;
 }
@@ -58,19 +69,9 @@ bool isMainMenuRunning()
  */
 void refresh(void)
 {
-	if (game && !isMainMenuRunning())
+	if (game && !is_main_menu())
 	{
 		game->update();	
-
-
-		char appName[13];
-		appName[0] = '>';
-		GetAppName(appName + 1);
-		size_t n = strlen(appName);
-		appName[n] = '<';
-		appName[n + 1] = '\0';
-		PrintMini(1, 1, (unsigned char*) appName, MINI_OVER);
-
 
 		// refresh the display from the VRAM
 		Bdisp_PutDisp_DD();	
