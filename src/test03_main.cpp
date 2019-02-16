@@ -11,6 +11,7 @@
 
 #include "Game.h"
 #include "GetAppName.h"
+#include <string.h>
 
 extern "C"
 {
@@ -65,10 +66,13 @@ void refresh(void)
 		Bdisp_PutDisp_DD();	
 	}
 
-	unsigned char appName[11];
-	GetAppName(appName);
-	appName[10] = '\0';
-	PrintMini(1, 1, appName, MINI_OVER);
+	char appName[13];
+	appName[0] = '>';
+	GetAppName(appName + 1);
+	size_t n = strlen(appName);
+	appName[n] = '<';
+	appName[n + 1] = '\0';
+	PrintMini(1, 1, (unsigned char*) appName, MINI_OVER);
 }
 
 /*
