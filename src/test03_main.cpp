@@ -46,7 +46,7 @@ void finish(void)
  */
 bool isMainMenuRunning()
 {
-	return true;
+	return false;
 }
 
 /*
@@ -62,17 +62,19 @@ void refresh(void)
 	{
 		game->update();	
 
+
+		char appName[13];
+		appName[0] = '>';
+		GetAppName(appName + 1);
+		size_t n = strlen(appName);
+		appName[n] = '<';
+		appName[n + 1] = '\0';
+		PrintMini(1, 1, (unsigned char*) appName, MINI_OVER);
+
+
 		// refresh the display from the VRAM
 		Bdisp_PutDisp_DD();	
 	}
-
-	char appName[13];
-	appName[0] = '>';
-	GetAppName(appName + 1);
-	size_t n = strlen(appName);
-	appName[n] = '<';
-	appName[n + 1] = '\0';
-	PrintMini(1, 1, (unsigned char*) appName, MINI_OVER);
 }
 
 /*
