@@ -54,6 +54,7 @@ static void print_app_name()
 
 /*
  * Hack
+ * Detect when the main menu is open, and our add-in is suspended. 
  */
 bool is_main_menu()
 {
