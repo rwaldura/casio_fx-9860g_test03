@@ -1,5 +1,6 @@
 /*
  * From http://media.taricorp.net/prizm/simon_chm/fx_useful_functions.htm
+ * see also http://media.taricorp.net/prizm/simon_chm/fx_legacy_syscalls.htm
  */
 
 /*
@@ -63,4 +64,4 @@ const unsigned int sc0478[] = { SYSCALL_A, SYSCALL_B, SYSCALL_ENTRY, 0x0478 };
  * Enable the MENU key
  */
 const unsigned int sc0477[] = { SYSCALL_A, SYSCALL_B, SYSCALL_ENTRY, 0x0477 };
-#define EnableGetkeyToMainFunctionReturn (*(sc_vv) sc0478)
+#define EnableGetkeyToMainFunctionReturn (*(sc_vv) sc0477)
