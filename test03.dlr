@@ -1,1 +1,6 @@
 [DLSimRunSpace]
+
+[Breakpoint]
+File=C:\fxProjects\test03\src\test03_main.cpp
+Line=73
+Flags=00001012

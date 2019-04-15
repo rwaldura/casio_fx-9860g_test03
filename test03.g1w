@@ -21,3 +21,4 @@ SourceFile=:src\test03_main.cpp
 HeaderFile=:src\FileReader.h
 HeaderFile=:src\Game.h
 HeaderFile=:src\Sprite.h
+HeaderFile=:src\syscalls.h
