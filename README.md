@@ -28,7 +28,7 @@ Pro: easy to understand.
 Cons:
 * Does not support the Menu key, or other OS-level functions like changing the contrast.
 * The value for `SOME_SMALL_AMOUNT_OF_TIME` dictates game liveliness.
-* Casio's `sleep()` is actually implemented as a tight loop, not a real sleep. Blech.
+* Casio's `sleep()` is actually implemented as a busy loop, not a real sleep. Blech.
 
 ## Wait for Events
 ```C
@@ -49,7 +49,9 @@ Cons:
 * Timer function draws all over Main Menu, makes it unusable
 
 Where I'm stuck: I don't know how to prevent this; I don't know how to suspend a timer, when Main Menu is called.
-Source file is `test03_main.cpp`.
+Or, alternatively, detect Main Menu is running, and avoid executing the timer.
+
+Source file is [test03_main.cpp](tree/master/src/test03_main.cpp).
 
 See also [Tutoriel Gestion du Clavier](https://www.planet-casio.com/Fr/forums/topic14175-5-tutoriel-la-gestion-du-clavier-en-c.html).
 A solution is provided, but I find it unsatisfying.
