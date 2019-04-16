@@ -51,7 +51,7 @@ Cons:
 Where I'm stuck: I don't know how to prevent this; I don't know how to suspend a timer, when Main Menu is called.
 Or, alternatively, detect Main Menu is running, and avoid executing the timer.
 
-Source file is [test03_main.cpp](../tree/master/src/test03_main.cpp).
+Source file is [test03_main.cpp](/rwaldura/casio_fx-9860g_test03/tree/master/src/test03_main.cpp).
 
 See also [Tutoriel Gestion du Clavier](https://www.planet-casio.com/Fr/forums/topic14175-5-tutoriel-la-gestion-du-clavier-en-c.html).
 A solution is provided, but I find it unsatisfying.
